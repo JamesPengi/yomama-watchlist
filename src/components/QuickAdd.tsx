@@ -11,6 +11,7 @@ import {
   FormField,
   FormItem,
 } from "@/components/ui/form";
+import { api } from "~/utils/api";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -24,9 +25,18 @@ export function QuickAdd() {
     defaultValues: { name: "" },
   });
 
+  const quickAdd = api.titles.quickAdd.useMutation({
+    onSuccess(data) {
+      // TODO: Invalidate query context
+      console.log(data);
+      form.reset();
+    },
+  });
+
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
-    // TODO: Add backend logic
+
+    quickAdd.mutate(values.name);
   }
 
   return (
@@ -41,11 +51,11 @@ export function QuickAdd() {
                 <Input
                   type="name"
                   placeholder="Quick add title to watchlist"
-                  className="bg-gray-900 p-5 font-extrabold transition-colors focus:bg-gray-700"
+                  className="rounded bg-gray-900 p-5 font-extrabold transition-colors focus:bg-gray-700"
                   {...field}
                 />
               </FormControl>
-              <FormDescription className="pl-px pt-2 text-xs text-gray-400">
+              <FormDescription className="pt-2 text-xs font-light text-gray-400">
                 Press enter to add the title to the watchlist
               </FormDescription>
             </FormItem>
