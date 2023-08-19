@@ -12,6 +12,7 @@ import {
   FormItem,
 } from "@/components/ui/form";
 import { api } from "~/utils/api";
+import { useEffect } from "react";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -20,6 +21,18 @@ const formSchema = z.object({
 });
 
 export function QuickAdd() {
+  useEffect(() => {
+    const down = (e: KeyboardEvent) => {
+      if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault();
+        form.setFocus("name");
+      }
+    };
+
+    document.addEventListener("keydown", down);
+    return () => document.removeEventListener("keydown", down);
+  }, []);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: { name: "" },
@@ -41,26 +54,30 @@ export function QuickAdd() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="w-full flex-1">
         <FormField
           control={form.control}
           name="name"
           render={({ field }) => (
-            <FormItem className="w-full pt-10">
+            <FormItem className="relative inline-flex w-full items-center rounded-md">
               <FormControl>
                 <Input
                   type="name"
                   placeholder="Quick add title to watchlist"
-                  className="rounded bg-gray-900 p-5 font-extrabold transition-colors focus:bg-gray-700"
+                  className="inline-flex rounded bg-gray-900 p-5 font-extrabold transition-colors focus:bg-gray-700"
                   {...field}
                 />
               </FormControl>
-              <FormDescription className="pt-2 text-xs font-light text-gray-400">
-                Press enter to add the title to the watchlist
-              </FormDescription>
+              <div className="absolute right-1.5 hidden h-5 space-x-1 rounded-md font-mono text-[10px] text-sm font-medium md:flex ">
+                <kbd>CTRL</kbd>
+                <kbd>K</kbd>
+              </div>
             </FormItem>
           )}
         />
+        <FormDescription className="pt-2 text-xs font-thin text-muted-foreground">
+          Press <kbd>ENTER</kbd> to add to the watchlist
+        </FormDescription>
         {/* TODO: Add form error state */}
       </form>
     </Form>
