@@ -14,7 +14,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
   return (
     <ClerkProvider {...pageProps}>
       <main
-        className={`flex min-h-screen flex-col space-x-5 bg-gray-800 text-white ${rubik.variable} font-sans`}
+        className={`flex min-h-screen flex-col space-x-5 ${rubik.variable} font-sans`}
       >
         <Component {...pageProps} />
       </main>

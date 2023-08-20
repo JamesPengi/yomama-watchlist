@@ -7,7 +7,7 @@ export default function Home() {
       <Head>
         <title>Yo Mama's Watchlist</title>
       </Head>
-      <main className="container mx-auto mt-10 bg-gray-800 text-white">
+      <main className="container mx-auto mt-10 space-y-10">
         <QuickAdd />
       </main>
     </>

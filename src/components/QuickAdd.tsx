@@ -64,11 +64,11 @@ export function QuickAdd() {
                 <Input
                   type="name"
                   placeholder="Quick add title to watchlist"
-                  className="inline-flex rounded border-none bg-gray-900 p-5 font-extrabold transition-colors focus:bg-gray-700"
+                  className="inline-flex rounded border-none bg-gray-900 px-5 py-8 font-extrabold transition-colors focus:bg-gray-800"
                   {...field}
                 />
               </FormControl>
-              <div className="absolute right-1.5 hidden space-x-1 rounded-md font-mono text-[10px] text-sm font-medium md:flex ">
+              <div className="absolute right-1.5 top-3 hidden space-x-1 rounded-md font-mono text-[10px] text-sm font-medium md:flex ">
                 <kbd>CTRL</kbd>
                 <kbd>K</kbd>
               </div>
