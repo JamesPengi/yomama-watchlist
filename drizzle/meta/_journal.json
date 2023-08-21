@@ -29,6 +29,27 @@
       "when": 1692421691091,
       "tag": "0003_long_barracuda",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1692531272988,
+      "tag": "0004_mighty_cardiac",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1692532487981,
+      "tag": "0005_redundant_kitty_pryde",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1692600839869,
+      "tag": "0006_workable_mojo",
+      "breakpoints": true
     }
   ]
 }
