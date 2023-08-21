@@ -1,4 +1,4 @@
-import { Input } from "@/components/ui/input";
+import { Input } from "./ui/input";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -10,7 +10,7 @@ import {
   FormDescription,
   FormField,
   FormItem,
-} from "@/components/ui/form";
+} from "./ui/form";
 import { api } from "~/utils/api";
 import { useEffect } from "react";
 
@@ -38,17 +38,15 @@ export function QuickAdd() {
     defaultValues: { name: "" },
   });
 
+  const queryContext = api.useContext();
   const quickAdd = api.titles.quickAdd.useMutation({
-    onSuccess(data) {
-      // TODO: Invalidate query context
-      console.log(data);
+    onSuccess() {
+      queryContext.titles.invalidate();
       form.reset();
     },
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-
     quickAdd.mutate(values.name);
   }
 
