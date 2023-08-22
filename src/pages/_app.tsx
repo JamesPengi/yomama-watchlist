@@ -17,6 +17,9 @@ const fontMono = FontMono({
   variable: "--font-mono",
 });
 
+// TODO: Switch to app router
+// https://nextjs.org/docs/pages/building-your-application/upgrading/app-router-migration#migrating-from-pages-to-app
+
 const MyApp: AppType = ({ Component, pageProps }) => {
   return (
     // <ClerkProvider {...pageProps}>

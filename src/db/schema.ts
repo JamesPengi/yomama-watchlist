@@ -53,7 +53,7 @@ export const titles = pgTable("titles", {
   dateAdded: timestamp("dateAdded", { withTimezone: true })
     .defaultNow()
     .notNull(),
-  isWatched: boolean("isWatched").default(false),
+  isWatched: boolean("isWatched").default(false).notNull(),
   dateWatched: timestamp("dateWatched", { withTimezone: true }),
 });
 

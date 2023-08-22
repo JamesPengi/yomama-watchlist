@@ -6,7 +6,7 @@ import { env } from "~/env.mjs";
 import { titles } from "~/db/schema";
 import type { tmdbResponse } from "~/utils/tmdbSchema";
 import { TRPCError } from "@trpc/server";
-import { desc } from "drizzle-orm";
+import { desc, eq, sql } from "drizzle-orm";
 import { parseTmdbResponse } from "~/utils/parseTmdbResponse";
 
 const TMDB_BASE_URL =
@@ -47,4 +47,30 @@ export const titlesRouter = createTRPCRouter({
 
     return await db.select().from(titles).orderBy(desc(titles.dateAdded));
   }),
+  toggleWatched: publicProcedure
+    .input(z.object({ name: z.string().min(2), isWatched: z.boolean() }))
+    .mutation(async ({ input }) => {
+      const queryClient = postgres(env.DATABASE_URL);
+      const db: PostgresJsDatabase = drizzle(queryClient);
+
+      if (!input.isWatched) {
+        await db
+          .update(titles)
+          .set({ isWatched: true, dateWatched: sql`now()` })
+          .where(eq(titles.name, input.name));
+      } else {
+        await db
+          .update(titles)
+          .set({ isWatched: false, dateWatched: null })
+          .where(eq(titles.name, input.name));
+      }
+    }),
+  delete: publicProcedure
+    .input(z.string().min(2))
+    .mutation(async ({ input }) => {
+      const queryClient = postgres(env.DATABASE_URL);
+      const db: PostgresJsDatabase = drizzle(queryClient);
+
+      await db.delete(titles).where(eq(titles.name, input));
+    }),
 });

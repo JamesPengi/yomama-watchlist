@@ -73,7 +73,7 @@ export function QuickAdd() {
             </FormItem>
           )}
         />
-        <FormDescription className="pt-2 text-xs font-thin text-muted-foreground">
+        <FormDescription className="pt-2 text-xs text-muted-foreground">
           Press <kbd>ENTER</kbd> to add to the watchlist
         </FormDescription>
         {/* TODO: Add form error state */}
