@@ -1,9 +1,13 @@
-import { Title__Insert } from "~/db/schema";
-import { getReadableGenreName, tmdbGenreName, tmdbResult } from "./tmdbSchema";
+import type { Title__Insert } from "~/db/schema";
+import {
+  getReadableGenreName,
+  type tmdbGenreName,
+  type tmdbResult,
+} from "./tmdbSchema";
 
 export function parseTmdbResponse(data: tmdbResult): Title__Insert {
-  var mediaType: "movie" | "tv" | "anime" = "movie";
-  var name = data.title;
+  let mediaType: "movie" | "tv" | "anime" = "movie";
+  let name = data.title;
 
   if (data.media_type === "tv") {
     mediaType = "tv";

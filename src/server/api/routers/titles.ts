@@ -1,10 +1,10 @@
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "../trpc";
 import postgres from "postgres";
-import { drizzle, PostgresJsDatabase } from "drizzle-orm/postgres-js";
+import { drizzle, type PostgresJsDatabase } from "drizzle-orm/postgres-js";
 import { env } from "~/env.mjs";
 import { titles } from "~/db/schema";
-import { tmdbResponse } from "~/utils/tmdbSchema";
+import type { tmdbResponse } from "~/utils/tmdbSchema";
 import { TRPCError } from "@trpc/server";
 import { desc } from "drizzle-orm";
 import { parseTmdbResponse } from "~/utils/parseTmdbResponse";
@@ -16,7 +16,7 @@ export const titlesRouter = createTRPCRouter({
   quickAdd: publicProcedure
     .input(z.string().min(2))
     .mutation(async ({ input }) => {
-      const { results: apiResponse }: tmdbResponse = await (
+      const { results: apiResponse }: tmdbResponse = (await (
         await fetch(`${TMDB_BASE_URL}&query=${input}`, {
           method: "GET",
           headers: {
@@ -24,7 +24,7 @@ export const titlesRouter = createTRPCRouter({
             Authorization: `Bearer ${env.TMDB_API_KEY}`,
           },
         })
-      ).json();
+      ).json()) as tmdbResponse;
 
       const data = apiResponse[0];
 
