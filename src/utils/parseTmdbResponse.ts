@@ -17,7 +17,13 @@ export function parseTmdbResponse(data: tmdbResult): Title__Insert {
     }
   }
 
-  const genre: tmdbGenreName = getReadableGenreName(data.genre_ids[0]!);
+  let genre: tmdbGenreName = getReadableGenreName(data.genre_ids[0]!);
+
+  if (genre === "Animation" && mediaType === "anime") {
+    if (data.genre_ids[1]) {
+      genre = getReadableGenreName(data.genre_ids[1]);
+    }
+  }
 
   return {
     name,
