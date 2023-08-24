@@ -40,20 +40,32 @@ export const titlesRouter = createTRPCRouter({
   getAll: publicProcedure.query(async ({ ctx: { db } }) => {
     return await db.select().from(titles).orderBy(desc(titles.dateAdded));
   }),
-  toggleWatched: publicProcedure
-    .input(z.object({ name: z.string().min(2), isWatched: z.boolean() }))
+  markAsWatched: publicProcedure
+    .input(
+      z.object({
+        name: z.string().min(2),
+        userDescription: z.string().min(2),
+        userRating: z.number().gte(0),
+      })
+    )
     .mutation(async ({ input, ctx: { db } }) => {
-      if (!input.isWatched) {
-        await db
-          .update(titles)
-          .set({ isWatched: true, dateWatched: sql`now()` })
-          .where(eq(titles.name, input.name));
-      } else {
-        await db
-          .update(titles)
-          .set({ isWatched: false, dateWatched: null })
-          .where(eq(titles.name, input.name));
-      }
+      await db
+        .update(titles)
+        .set({ isWatched: true, dateWatched: sql`now()` })
+        .where(eq(titles.name, input.name));
+    }),
+  markAsNotWatched: publicProcedure
+    .input(z.object({ name: z.string().min(2) }))
+    .mutation(async ({ input, ctx: { db } }) => {
+      await db
+        .update(titles)
+        .set({
+          isWatched: false,
+          dateWatched: null,
+          userDescription: null,
+          userRating: null,
+        })
+        .where(eq(titles.name, input.name));
     }),
   delete: publicProcedure
     .input(z.string().min(2))

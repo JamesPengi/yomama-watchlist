@@ -1,0 +1,141 @@
+{
+  "version": "5",
+  "dialect": "pg",
+  "id": "a479b577-fcc1-4d74-95f4-9e273267848b",
+  "prevId": "2b37596a-1384-4bb4-a2e0-4fc8d47be85b",
+  "tables": {
+    "titles": {
+      "name": "titles",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "tmdbId": {
+          "name": "tmdbId",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "tmdbPosterPath": {
+          "name": "tmdbPosterPath",
+          "type": "varchar(60)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "tmdbOverview": {
+          "name": "tmdbOverview",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "genre": {
+          "name": "genre",
+          "type": "genre",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "mediaType": {
+          "name": "mediaType",
+          "type": "mediaType",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "dateAdded": {
+          "name": "dateAdded",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "isWatched": {
+          "name": "isWatched",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "dateWatched": {
+          "name": "dateWatched",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "userDescription": {
+          "name": "userDescription",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "userRating": {
+          "name": "userRating",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    }
+  },
+  "enums": {
+    "genre": {
+      "name": "genre",
+      "values": {
+        "Action": "Action",
+        "Action & Adventure": "Action & Adventure",
+        "Adventure": "Adventure",
+        "Animation": "Animation",
+        "Comedy": "Comedy",
+        "Crime": "Crime",
+        "Documentary": "Documentary",
+        "Drama": "Drama",
+        "Family": "Family",
+        "Fantasy": "Fantasy",
+        "History": "History",
+        "Horror": "Horror",
+        "Kids": "Kids",
+        "Music": "Music",
+        "Mystery": "Mystery",
+        "News": "News",
+        "Reality": "Reality",
+        "Romance": "Romance",
+        "Sci-Fi & Fantasy": "Sci-Fi & Fantasy",
+        "Science Fiction": "Science Fiction",
+        "Soap": "Soap",
+        "Talk": "Talk",
+        "TV Movie": "TV Movie",
+        "Thriller": "Thriller",
+        "War": "War",
+        "War & Politics": "War & Politics",
+        "Western": "Western",
+        "Unknown": "Unknown"
+      }
+    },
+    "mediaType": {
+      "name": "mediaType",
+      "values": {
+        "movie": "movie",
+        "tv": "tv",
+        "anime": "anime"
+      }
+    }
+  },
+  "schemas": {},
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {}
+  }
+}

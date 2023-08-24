@@ -7,6 +7,7 @@ import {
   serial,
   text,
   pgEnum,
+  decimal,
 } from "drizzle-orm/pg-core";
 
 export const genreEnum = pgEnum("genre", [
@@ -55,9 +56,11 @@ export const titles = pgTable("titles", {
     .notNull(),
   isWatched: boolean("isWatched").default(false).notNull(),
   dateWatched: timestamp("dateWatched", { withTimezone: true }),
+  userDescription: text("userDescription"),
+  userRating: decimal("userRating"),
 });
 
-// TODO: Add people watched, rating and custom genre
+// TODO: Add people watched, rating and one phrase description
 
 export type Title = InferModel<typeof titles, "select">;
 export type Title__Insert = InferModel<typeof titles, "insert">;
