@@ -1,7 +1,5 @@
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "../trpc";
-import postgres from "postgres";
-import { drizzle, type PostgresJsDatabase } from "drizzle-orm/postgres-js";
 import { env } from "~/env.mjs";
 import { titles } from "~/db/schema";
 import type { tmdbResponse } from "~/utils/tmdbSchema";
@@ -15,7 +13,7 @@ const TMDB_BASE_URL =
 export const titlesRouter = createTRPCRouter({
   quickAdd: publicProcedure
     .input(z.string().min(2))
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input, ctx: { db } }) => {
       const { results: apiResponse }: tmdbResponse = (await (
         await fetch(`${TMDB_BASE_URL}&query=${input}`, {
           method: "GET",
@@ -36,23 +34,15 @@ export const titlesRouter = createTRPCRouter({
       }
 
       const parsedData = parseTmdbResponse(data);
-      const queryClient = postgres(env.DATABASE_URL);
-      const db: PostgresJsDatabase = drizzle(queryClient);
 
       await db.insert(titles).values(parsedData);
     }),
-  getAll: publicProcedure.query(async () => {
-    const queryClient = postgres(env.DATABASE_URL);
-    const db: PostgresJsDatabase = drizzle(queryClient);
-
+  getAll: publicProcedure.query(async ({ ctx: { db } }) => {
     return await db.select().from(titles).orderBy(desc(titles.dateAdded));
   }),
   toggleWatched: publicProcedure
     .input(z.object({ name: z.string().min(2), isWatched: z.boolean() }))
-    .mutation(async ({ input }) => {
-      const queryClient = postgres(env.DATABASE_URL);
-      const db: PostgresJsDatabase = drizzle(queryClient);
-
+    .mutation(async ({ input, ctx: { db } }) => {
       if (!input.isWatched) {
         await db
           .update(titles)
@@ -67,10 +57,7 @@ export const titlesRouter = createTRPCRouter({
     }),
   delete: publicProcedure
     .input(z.string().min(2))
-    .mutation(async ({ input }) => {
-      const queryClient = postgres(env.DATABASE_URL);
-      const db: PostgresJsDatabase = drizzle(queryClient);
-
+    .mutation(async ({ input, ctx: { db } }) => {
       await db.delete(titles).where(eq(titles.name, input));
     }),
 });
