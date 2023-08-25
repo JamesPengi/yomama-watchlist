@@ -2,7 +2,7 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "../trpc";
 import { env } from "~/env.mjs";
 import { titles, titlesToUsers } from "~/db/schema";
-import { TitleToUser__Insert } from "~/db/drizzle";
+import type { TitleToUser__Insert, Title__Insert } from "~/db/drizzle";
 import type { tmdbResponse } from "~/utils/tmdbSchema";
 import { TRPCError } from "@trpc/server";
 import { desc, eq, sql } from "drizzle-orm";
@@ -34,7 +34,7 @@ export const titlesRouter = createTRPCRouter({
         });
       }
 
-      const parsedData = parseTmdbResponse(data);
+      const parsedData: Title__Insert = parseTmdbResponse(data);
 
       await db.insert(titles).values(parsedData);
     }),

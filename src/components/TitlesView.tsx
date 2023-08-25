@@ -127,7 +127,7 @@ const columns: ColumnDef<Title>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
-      let { data: usersData } = api.users.getAll.useQuery();
+      const { data: usersData } = api.users.getAll.useQuery();
 
       if (usersData) {
         return <DataTableRowActions row={row} userData={usersData} />;

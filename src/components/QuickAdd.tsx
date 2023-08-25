@@ -21,6 +21,11 @@ const formSchema = z.object({
 });
 
 export function QuickAdd() {
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: { name: "" },
+  });
+
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
       if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
@@ -31,17 +36,12 @@ export function QuickAdd() {
 
     document.addEventListener("keydown", down);
     return () => document.removeEventListener("keydown", down);
-  }, []);
-
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: { name: "" },
-  });
+  }, [form]);
 
   const queryContext = api.useContext();
   const quickAdd = api.titles.quickAdd.useMutation({
-    onSuccess() {
-      queryContext.titles.invalidate();
+    async onSuccess() {
+      await queryContext.titles.invalidate();
       form.reset();
     },
   });

@@ -1,20 +1,12 @@
 import { type AppType } from "next/app";
 import { api } from "~/utils/api";
 import "~/styles/globals.css";
-import {
-  Inter as FontSans,
-  JetBrains_Mono as FontMono,
-} from "next/font/google";
+import { Inter as FontSans } from "next/font/google";
 // import { ClerkProvider } from "@clerk/nextjs";
 
 const fontSans = FontSans({
   subsets: ["latin"],
   variable: "--font-sans",
-});
-
-const fontMono = FontMono({
-  subsets: ["latin"],
-  variable: "--font-mono",
 });
 
 // TODO: Switch to app router

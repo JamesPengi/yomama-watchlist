@@ -66,9 +66,8 @@ export function DataTableRowActions<TData>({
 
   const onSubmit = (data: z.infer<typeof formSchema>) => {
     const usersWatched = userData.filter((user) => {
-      for (let i = 0; i < data.users.length; i++) {
-        const element = data.users[i];
-        if (element === user.name) {
+      for (const userData of data.users) {
+        if (userData === user.name) {
           return true;
         }
       }
