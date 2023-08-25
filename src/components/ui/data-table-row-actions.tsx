@@ -153,6 +153,7 @@ export function DataTableRowActions<TData>({
           <form
             className="space-y-5 pb-5 pt-2"
             onSubmit={form.handleSubmit(onSubmit)}
+            autoComplete="off"
           >
             <div className="w-2/3 space-y-5">
               <FormField

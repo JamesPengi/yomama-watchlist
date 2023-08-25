@@ -52,7 +52,11 @@ export function QuickAdd() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="w-full flex-1">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="w-full flex-1"
+        autoComplete="off"
+      >
         <FormField
           control={form.control}
           name="name"
