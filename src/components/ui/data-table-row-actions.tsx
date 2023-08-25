@@ -19,7 +19,7 @@ import type { Row } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 import { api } from "~/utils/api";
 import { Button } from "./button";
-import type { Title, User } from "~/db/schema";
+import type { Title, User } from "~/db/drizzle";
 import { useState } from "react";
 import {
   Form,

@@ -1,13 +1,8 @@
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "../trpc";
 import { env } from "~/env.mjs";
-import {
-  TitleToUser__Insert,
-  titles,
-  titlesToUsers,
-  titlesToUsersRelations,
-  users,
-} from "~/db/schema";
+import { titles, titlesToUsers } from "~/db/schema";
+import { TitleToUser__Insert } from "~/db/drizzle";
 import type { tmdbResponse } from "~/utils/tmdbSchema";
 import { TRPCError } from "@trpc/server";
 import { desc, eq, sql } from "drizzle-orm";

@@ -1,4 +1,4 @@
-import type { Title__Insert } from "~/db/schema";
+import type { Title__Insert } from "~/db/drizzle";
 import {
   getReadableGenreName,
   type tmdbGenreName,

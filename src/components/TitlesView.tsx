@@ -1,5 +1,5 @@
 import type { ColumnDef } from "@tanstack/react-table";
-import type { Title } from "~/db/schema";
+import type { Title } from "~/db/drizzle";
 import { api } from "~/utils/api";
 import { DataTable } from "./ui/data-table";
 import React from "react";

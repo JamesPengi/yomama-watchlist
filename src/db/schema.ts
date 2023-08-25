@@ -1,4 +1,4 @@
-import { relations, type InferModel } from "drizzle-orm";
+import { relations } from "drizzle-orm";
 import {
   pgTable,
   varchar,
@@ -100,10 +100,3 @@ export const titlesToUsersRelations = relations(titlesToUsers, ({ one }) => ({
     references: [users.id],
   }),
 }));
-
-export type Title = InferModel<typeof titles, "select">;
-export type Title__Insert = InferModel<typeof titles, "insert">;
-
-export type User = InferModel<typeof users, "select">;
-
-export type TitleToUser__Insert = InferModel<typeof titlesToUsers, "insert">;
