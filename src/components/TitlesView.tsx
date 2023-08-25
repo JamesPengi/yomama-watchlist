@@ -13,6 +13,7 @@ import { Badge } from "./ui/badge";
 import { Separator } from "./ui/separator";
 import { ScrollArea } from "./ui/scroll-area";
 import { DataTableRowActions } from "./ui/data-table-row-actions";
+import { Skeleton } from "./ui/skeleton";
 
 const Header = React.forwardRef<
   HTMLDivElement,
@@ -53,8 +54,11 @@ const columns: ColumnDef<Title>[] = [
                 <span className="text-lg">{row.getValue("name")}</span>
               </div>
             </HoverCardTrigger>
-            <HoverCardContent className="w-[500px] bg-gray-900 p-2 text-white">
-              <div className="flex space-x-5 p-1">
+            <HoverCardContent
+              align="start"
+              className="w-[500px] bg-gray-900 text-white"
+            >
+              <div className="flex space-x-5">
                 <div className="min-w-[200px]">
                   <Image
                     src={`https://image.tmdb.org/t/p/w500${row.original.tmdbPosterPath}`}
@@ -122,7 +126,15 @@ const columns: ColumnDef<Title>[] = [
   },
   {
     id: "actions",
-    cell: ({ row }) => <DataTableRowActions row={row} />,
+    cell: ({ row }) => {
+      let { data: usersData } = api.users.getAll.useQuery();
+
+      if (usersData) {
+        return <DataTableRowActions row={row} userData={usersData} />;
+      } else {
+        return <Skeleton className="flex h-8 w-8 p-0" />;
+      }
+    },
   },
 ];
 

@@ -19,11 +19,12 @@ import type { Row } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 import { api } from "~/utils/api";
 import { Button } from "./button";
-import { Title } from "~/db/schema";
+import type { Title, User } from "~/db/schema";
 import { useState } from "react";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -33,12 +34,17 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "./input";
+import { Checkbox } from "./checkbox";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
+  userData: User[];
 }
 
 const formSchema = z.object({
+  users: z.array(z.string()).refine((value) => value.some((item) => item), {
+    message: "You have to select at least 1 person who watched it",
+  }),
   ratings: z.string().min(1, {
     message: "Please enter at least one digit",
   }),
@@ -49,20 +55,33 @@ const formSchema = z.object({
 
 export function DataTableRowActions<TData>({
   row,
+  userData,
 }: DataTableRowActionsProps<TData>) {
   const title = row.original as Title;
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: { ratings: "", description: "" },
+    defaultValues: { users: ["Jassem"], ratings: "", description: "" },
   });
 
   const onSubmit = (data: z.infer<typeof formSchema>) => {
-    markAsWatched.mutate({
-      name: title.name,
-      userDescription: data.description,
-      userRating: Number(data.ratings),
+    const usersWatched = userData.filter((user) => {
+      for (let i = 0; i < data.users.length; i++) {
+        const element = data.users[i];
+        if (element === user.name) {
+          return true;
+        }
+      }
     });
+
+    if (!Number.isNaN(data.ratings)) {
+      markAsWatched.mutate({
+        titleId: title.id,
+        userDescription: data.description,
+        userRating: data.ratings,
+        usersWatched: usersWatched,
+      });
+    }
   };
 
   const queryContext = api.useContext();
@@ -97,13 +116,13 @@ export function DataTableRowActions<TData>({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-[160px]">
-          <DropdownMenuLabel>Title Options</DropdownMenuLabel>
+          <DropdownMenuLabel className="text-center">Options</DropdownMenuLabel>
           <DropdownMenuSeparator />
           {title.isWatched ? (
             <DropdownMenuItem
               onClick={() =>
                 markAsNotWatched.mutate({
-                  name: title.name,
+                  id: title.id,
                 })
               }
             >
@@ -127,7 +146,8 @@ export function DataTableRowActions<TData>({
         <DialogHeader>
           <DialogTitle>{title.name}</DialogTitle>
           <DialogDescription>
-            Enter your rating, and phrase to describe {title.name}
+            Enter who watched {title.name} your rating, and phrase to describe
+            it.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -135,7 +155,68 @@ export function DataTableRowActions<TData>({
             className="space-y-5 pb-5 pt-2"
             onSubmit={form.handleSubmit(onSubmit)}
           >
-            <div className="w-2/3 space-y-3">
+            <div className="w-2/3 space-y-5">
+              <FormField
+                control={form.control}
+                name="users"
+                render={() => {
+                  return (
+                    <FormItem>
+                      <div className="mb-4">
+                        <FormLabel className="font-bold">
+                          People Watched
+                        </FormLabel>
+                        <FormDescription>
+                          Select the people who watched this
+                        </FormDescription>
+                        <div className="mt-3 space-y-2">
+                          {userData.map((user) => {
+                            return (
+                              <FormField
+                                key={user.id}
+                                control={form.control}
+                                name="users"
+                                render={({ field }) => {
+                                  return (
+                                    <FormItem
+                                      key={user.id}
+                                      className="flex flex-row items-start space-x-3 space-y-0"
+                                    >
+                                      <FormControl>
+                                        <Checkbox
+                                          checked={field.value.includes(
+                                            String(user.name)
+                                          )}
+                                          onCheckedChange={(checked) => {
+                                            return checked
+                                              ? field.onChange([
+                                                  ...field.value,
+                                                  user.name,
+                                                ])
+                                              : field.onChange(
+                                                  field.value.filter(
+                                                    (value) =>
+                                                      value !==
+                                                      String(user.name)
+                                                  )
+                                                );
+                                          }}
+                                        />
+                                      </FormControl>
+                                      <FormLabel>{user.name}</FormLabel>
+                                    </FormItem>
+                                  );
+                                }}
+                              />
+                            );
+                          })}
+                        </div>
+                        <FormMessage className="mt-2" />
+                      </div>
+                    </FormItem>
+                  );
+                }}
+              />
               <FormField
                 control={form.control}
                 name="ratings"
