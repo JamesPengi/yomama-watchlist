@@ -25,13 +25,6 @@ Header.displayName = "Header";
 
 const columns: ColumnDef<Title>[] = [
   {
-    accessorKey: "id",
-    header: () => <Header className="w-[20px]">SR NO</Header>,
-    cell: ({ row }) => {
-      return <div className="w-[20px]">{row.getValue("id")}</div>;
-    },
-  },
-  {
     accessorKey: "mediaType",
     header: () => <Header>Type</Header>,
     cell: ({ row }) => (
