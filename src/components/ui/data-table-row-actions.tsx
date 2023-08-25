@@ -92,6 +92,7 @@ export function DataTableRowActions<TData>({
   const markAsWatched = api.titles.markAsWatched.useMutation({
     onSuccess() {
       queryContext.titles.invalidate();
+      form.reset();
       setDialogOpen(false);
     },
   });
@@ -135,7 +136,7 @@ export function DataTableRowActions<TData>({
 
           <DropdownMenuItem
             className="text-red-500 focus:bg-red-500 focus:text-white"
-            onClick={() => deleteTitle.mutate(title.name)}
+            onClick={() => deleteTitle.mutate(title.id)}
           >
             Delete title
           </DropdownMenuItem>

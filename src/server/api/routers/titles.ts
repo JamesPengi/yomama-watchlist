@@ -89,8 +89,11 @@ export const titlesRouter = createTRPCRouter({
       });
     }),
   delete: publicProcedure
-    .input(z.string().min(2))
+    .input(z.number().min(0))
     .mutation(async ({ input, ctx: { db } }) => {
-      await db.delete(titles).where(eq(titles.name, input));
+      await db.transaction(async (tx) => {
+        await tx.delete(titlesToUsers).where(eq(titlesToUsers.titleId, input));
+        await tx.delete(titles).where(eq(titles.id, input));
+      });
     }),
 });
