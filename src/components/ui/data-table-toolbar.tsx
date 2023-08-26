@@ -1,4 +1,4 @@
-import { Table } from "@tanstack/react-table";
+import type { Table } from "@tanstack/react-table";
 import { Input } from "./input";
 import { Button } from "./button";
 import { CheckCircleIcon, CircleDashedIcon, XCircleIcon } from "lucide-react";

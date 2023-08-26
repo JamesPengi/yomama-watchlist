@@ -1,4 +1,4 @@
-import { Column } from "@tanstack/react-table";
+import type { Column } from "@tanstack/react-table";
 import React from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 import { Button } from "./button";
@@ -7,9 +7,7 @@ import { Separator } from "./separator";
 import { Badge } from "./badge";
 import {
   Command,
-  CommandEmpty,
   CommandGroup,
-  CommandInput,
   CommandItem,
   CommandList,
   CommandSeparator,

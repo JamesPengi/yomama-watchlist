@@ -8,6 +8,7 @@ import { httpBatchLink, loggerLink } from "@trpc/client";
 import { createTRPCNext } from "@trpc/next";
 import { type inferRouterInputs, type inferRouterOutputs } from "@trpc/server";
 import superjson from "superjson";
+import { QueryClient } from "@tanstack/react-query";
 import { type AppRouter } from "~/server/api/root";
 
 const getBaseUrl = () => {
@@ -42,6 +43,14 @@ export const api = createTRPCNext<AppRouter>({
           url: `${getBaseUrl()}/api/trpc`,
         }),
       ],
+      queryClient: new QueryClient({
+        defaultOptions: {
+          queries: {
+            staleTime: 1000 * 60 * 5,
+            refetchOnWindowFocus: false,
+          },
+        },
+      }),
     };
   },
   /**

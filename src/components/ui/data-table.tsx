@@ -17,7 +17,6 @@ import {
   getFilteredRowModel,
   getFacetedRowModel,
   getFacetedUniqueValues,
-  getSortedRowModel,
 } from "@tanstack/react-table";
 
 interface DataTableProps<TData, TValue> {
