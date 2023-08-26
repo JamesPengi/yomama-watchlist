@@ -1,0 +1,5 @@
+{
+  "projectId": "cl7otgjes169960gelyr39ofrth",
+  "targetDatabaseUrl": "postgres://postgres:foobar@localhost:5432/postgres",
+  "publicKey": "-----BEGIN RSA PUBLIC KEY-----\nMIIBigKCAYEA2P+bDK3szM1yF6NSW7OQOhhmBswXSUCSQ2wdjadgjM1JdkAYeQF4\nsG4aike7dCxPhyABExBazeyxg1+zK/hYdkgjKzXKLGsho9Ni6/4ttVJAfBEyA9Cz\nQqIvnPTi73UO7wEyczKdE7WEeZ+deXGg3YDPERk+qlmzFyM5FYyl3HbWEF2Ekn2A\nyTLGP3Xq5AZuUl9tyTJncZC3ZhxzVukYJ6pITFx7EtiwniRMctQ870XUPLyM/HvP\nfAvKzbJC8W8zju26hzC3S71PBSg7ftGQveduIh8Zcgw2KatW7NTHpxENz9DeYBqH\n2FKvbjyml5A8R6Z4pY8BSn0+8gA8O7o2IC/uSARFWCyLBysgJUe3Ohc0gu6ATxSJ\nVC8rupTDwedEOXqrXsi6VyNqkjrg/lIyW8syP/IYIyQobGQ0CciMLWE1t4STBuBt\ngFpwAe7f82RnGRETgh0Fcdl7+MqJpDbtSkepFsjl+DI6LJc8gE0f33/eWWqn2NzZ\nel39OpYKbeFFAgMBAAE=\n-----END RSA PUBLIC KEY-----\n"
+}
