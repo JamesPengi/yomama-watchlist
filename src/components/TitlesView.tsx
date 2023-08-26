@@ -29,7 +29,7 @@ const columns: ColumnDef<Title>[] = [
     header: () => <Header>Type</Header>,
     cell: ({ row }) => (
       <div className="w-[20px]">
-        <Badge variant="outline" className="uppercase">
+        <Badge variant={row.getValue("mediaType")} className="uppercase">
           {row.getValue("mediaType")}
         </Badge>
       </div>
