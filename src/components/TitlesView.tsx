@@ -107,7 +107,7 @@ const columns: ColumnDef<Title>[] = [
     header: () => <Header>Watched</Header>,
     cell: ({ row }) => {
       return (
-        <div className="flex w-[50px] translate-x-1 justify-center">
+        <div className="flex w-[50px] translate-x-1.5 justify-center">
           {!row.getValue("isWatched") ? (
             <CircleDashed className="text-red-500" />
           ) : (
@@ -115,6 +115,9 @@ const columns: ColumnDef<Title>[] = [
           )}
         </div>
       );
+    },
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id));
     },
   },
   {

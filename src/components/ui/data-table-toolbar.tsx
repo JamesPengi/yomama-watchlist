@@ -1,7 +1,8 @@
 import { Table } from "@tanstack/react-table";
 import { Input } from "./input";
 import { Button } from "./button";
-import { XCircleIcon } from "lucide-react";
+import { CheckCircleIcon, CircleDashedIcon, XCircleIcon } from "lucide-react";
+import { DataTableFacetedFilter } from "./data-table-faceted-filter";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
@@ -23,6 +24,17 @@ export function DataTableToolbar<TData>({
           }
           className="h-10 w-[150px] p-4 lg:w-[250px]"
         />
+
+        {table.getColumn("isWatched") && (
+          <DataTableFacetedFilter
+            column={table.getColumn("isWatched")}
+            title="Watched"
+            options={[
+              { label: "Watched", value: true, icon: CheckCircleIcon },
+              { label: "Not Watched", value: false, icon: CircleDashedIcon },
+            ]}
+          />
+        )}
 
         {isFiltered && (
           <Button

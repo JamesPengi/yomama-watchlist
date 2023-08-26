@@ -15,6 +15,9 @@ import {
   useReactTable,
   getPaginationRowModel,
   getFilteredRowModel,
+  getFacetedRowModel,
+  getFacetedUniqueValues,
+  getSortedRowModel,
 } from "@tanstack/react-table";
 
 interface DataTableProps<TData, TValue> {
@@ -32,6 +35,8 @@ export function DataTable<TData, TValue>({
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
+    getFacetedRowModel: getFacetedRowModel(),
+    getFacetedUniqueValues: getFacetedUniqueValues(),
   });
 
   return (
