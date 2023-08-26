@@ -42,4 +42,4 @@ yarn-error.log*
 *.tsbuildinfo
 
 # snaplet
-/.snaplet
+.snaplet/snapshots
