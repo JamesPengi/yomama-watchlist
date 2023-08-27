@@ -104,6 +104,9 @@ const columns: ColumnDef<Title>[] = [
     cell: ({ row }) => {
       return <div>{row.getValue("genre")}</div>;
     },
+    filterFn: (row, id, value: string) => {
+      return value.includes(row.getValue(id));
+    },
   },
   {
     accessorKey: "isWatched",

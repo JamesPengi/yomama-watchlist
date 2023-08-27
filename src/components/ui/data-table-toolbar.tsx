@@ -55,6 +55,48 @@ export function DataTableToolbar<TData>({
           />
         )}
 
+        {table.getColumn("genre") && (
+          <DataTableFacetedFilter
+            column={table.getColumn("genre")}
+            title="Genre"
+            options={[
+              "Action",
+              "Action & Adventure",
+              "Adventure",
+              "Animation",
+              "Comedy",
+              "Crime",
+              "Documentary",
+              "Drama",
+              "Family",
+              "Fantasy",
+              "History",
+              "Horror",
+              "Kids",
+              "Music",
+              "Mystery",
+              "News",
+              "Reality",
+              "Romance",
+              "Sci-Fi & Fantasy",
+              "Science Fiction",
+              "Soap",
+              "Talk",
+              "TV Movie",
+              "Thriller",
+              "War",
+              "War & Politics",
+              "Western",
+              "Unknown",
+            ].map((genre) => {
+              return {
+                label: genre,
+                value: genre,
+              };
+            })}
+          />
+        )}
+
         {isFiltered && (
           <Button
             variant="ghost"
