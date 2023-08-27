@@ -30,8 +30,8 @@ export function DataTableToolbar<TData>({
             column={table.getColumn("isWatched")}
             title="Watched"
             options={[
-              { label: "Watched", value: true, icon: CheckCircleIcon },
-              { label: "Not Watched", value: false, icon: CircleDashedIcon },
+              { label: "Watched", value: "true", icon: CheckCircleIcon },
+              { label: "Not Watched", value: "false", icon: CircleDashedIcon },
             ]}
           />
         )}

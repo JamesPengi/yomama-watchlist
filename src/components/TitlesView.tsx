@@ -34,6 +34,9 @@ const columns: ColumnDef<Title>[] = [
         </Badge>
       </div>
     ),
+    filterFn: (row, id, value: string) => {
+      return value.includes(row.getValue(id));
+    },
   },
   {
     accessorKey: "name",
@@ -104,11 +107,18 @@ const columns: ColumnDef<Title>[] = [
   },
   {
     accessorKey: "isWatched",
+    accessorFn: ({ isWatched }) => {
+      if (isWatched) {
+        return "true";
+      } else {
+        return "false";
+      }
+    },
     header: () => <Header>Watched</Header>,
     cell: ({ row }) => {
       return (
         <div className="flex w-[50px] translate-x-1.5 justify-center">
-          {!row.getValue("isWatched") ? (
+          {row.getValue("isWatched") === "false" ? (
             <CircleDashed className="text-red-500" />
           ) : (
             <CheckCircle className="text-green-500" />

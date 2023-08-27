@@ -19,7 +19,7 @@ interface DataTableFacetedFilter<TData, TValue> {
   title?: string;
   options: {
     label: string;
-    value: boolean;
+    value: string;
     icon: React.ComponentType<{ className?: string }>;
   }[];
 }
@@ -30,7 +30,7 @@ export function DataTableFacetedFilter<TData, TValue>({
   options,
 }: DataTableFacetedFilter<TData, TValue>) {
   const facets = column?.getFacetedUniqueValues();
-  const selectedValues = new Set(column?.getFilterValue() as boolean[]);
+  const selectedValues = new Set(column?.getFilterValue() as string[]);
 
   return (
     <Popover>
