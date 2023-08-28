@@ -1,8 +1,16 @@
 import type { Table } from "@tanstack/react-table";
 import { Input } from "./input";
 import { Button } from "./button";
-import { CheckCircleIcon, CircleDashedIcon, XCircleIcon } from "lucide-react";
+import {
+  BrushIcon,
+  CheckCircleIcon,
+  CircleDashedIcon,
+  ClapperboardIcon,
+  TvIcon,
+  XCircleIcon,
+} from "lucide-react";
 import { DataTableFacetedFilter } from "./data-table-faceted-filter";
+import { api } from "~/utils/api";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
@@ -11,8 +19,20 @@ interface DataTableToolbarProps<TData> {
 export function DataTableToolbar<TData>({
   table,
 }: DataTableToolbarProps<TData>) {
+  const { data: usersData } = api.users.getAll.useQuery();
   const isFiltered = table.getState().columnFilters.length > 0;
-
+  const isWatchedFiltered = table.getState().columnFilters.find((value) => {
+    // @ts-expect-error value.value of the row 'isWatched' is always an array in this implementation
+    if (value.id === "isWatched" && value.value[0] === "true") {
+      return true;
+    }
+  });
+  const isNotWatchedFiltered = table.getState().columnFilters.find((value) => {
+    // @ts-expect-error value.value of the row 'isWatched' is always an array in this implementation
+    if (value.id === "isWatched" && value.value[0] === "false") {
+      return true;
+    }
+  });
   return (
     <div className="flex items-center justify-between">
       <div className="flex flex-1 items-center space-x-2">
@@ -30,10 +50,98 @@ export function DataTableToolbar<TData>({
             column={table.getColumn("isWatched")}
             title="Watched"
             options={[
-              { label: "Watched", value: true, icon: CheckCircleIcon },
-              { label: "Not Watched", value: false, icon: CircleDashedIcon },
+              { label: "Watched", value: "true", icon: CheckCircleIcon },
+              { label: "Not Watched", value: "false", icon: CircleDashedIcon },
             ]}
           />
+        )}
+
+        {table.getColumn("mediaType") && (
+          <DataTableFacetedFilter
+            column={table.getColumn("mediaType")}
+            title="Type"
+            options={[
+              { label: "Movie", value: "movie", icon: ClapperboardIcon },
+              { label: "TV", value: "tv", icon: TvIcon },
+              { label: "Anime", value: "anime", icon: BrushIcon },
+            ]}
+          />
+        )}
+
+        {table.getColumn("genre") && (
+          <DataTableFacetedFilter
+            column={table.getColumn("genre")}
+            title="Genre"
+            options={[
+              "Action",
+              "Action & Adventure",
+              "Adventure",
+              "Animation",
+              "Comedy",
+              "Crime",
+              "Documentary",
+              "Drama",
+              "Family",
+              "Fantasy",
+              "History",
+              "Horror",
+              "Kids",
+              "Music",
+              "Mystery",
+              "News",
+              "Reality",
+              "Romance",
+              "Sci-Fi & Fantasy",
+              "Science Fiction",
+              "Soap",
+              "Talk",
+              "TV Movie",
+              "Thriller",
+              "War",
+              "War & Politics",
+              "Western",
+              "Unknown",
+            ].map((genre) => {
+              return {
+                label: genre,
+                value: genre,
+              };
+            })}
+          />
+        )}
+
+        {isWatchedFiltered && (
+          <>
+            {table.getColumn("watchedBy") && usersData && (
+              <DataTableFacetedFilter
+                column={table.getColumn("watchedBy")}
+                title="Watched by"
+                options={usersData.map((user) => {
+                  return {
+                    label: user.name,
+                    value: user.name,
+                  };
+                })}
+              />
+            )}
+          </>
+        )}
+
+        {!isWatchedFiltered && !isNotWatchedFiltered && (
+          <>
+            {table.getColumn("notWatchedBy") && usersData && (
+              <DataTableFacetedFilter
+                column={table.getColumn("notWatchedBy")}
+                title="Not watched by"
+                options={usersData.map((user) => {
+                  return {
+                    label: user.name,
+                    value: user.name,
+                  };
+                })}
+              />
+            )}
+          </>
         )}
 
         {isFiltered && (

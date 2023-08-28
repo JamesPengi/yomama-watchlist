@@ -1,5 +1,5 @@
-import type { ColumnDef } from "@tanstack/react-table";
-import type { Title } from "~/db/drizzle";
+import type { ColumnDef, InitialTableState } from "@tanstack/react-table";
+import type { tmdbGenreName } from "~/utils/tmdbSchema";
 import { api } from "~/utils/api";
 import { DataTable } from "./ui/data-table";
 import React from "react";
@@ -23,17 +23,36 @@ const Header = React.forwardRef<
 ));
 Header.displayName = "Header";
 
-const columns: ColumnDef<Title>[] = [
+const columns: ColumnDef<{
+  id: number;
+  tmdbId: string;
+  tmdbPosterPath: string;
+  tmdbOverview: string;
+  name: string;
+  genre: tmdbGenreName;
+  mediaType: "movie" | "tv" | "anime";
+  dateAdded: Date;
+  isWatched: boolean;
+  dateWatched: Date;
+  userDescriptoin: string;
+  userRating: string;
+  titlesToUsers: {
+    user?: {
+      name: string;
+    };
+  }[];
+}>[] = [
   {
     accessorKey: "mediaType",
     header: () => <Header>Type</Header>,
     cell: ({ row }) => (
-      <div className="w-[20px]">
-        <Badge variant={row.getValue("mediaType")} className="uppercase">
-          {row.getValue("mediaType")}
-        </Badge>
-      </div>
+      <Badge variant={row.getValue("mediaType")} className="uppercase">
+        {row.getValue("mediaType")}
+      </Badge>
     ),
+    filterFn: (row, id, value: string) => {
+      return value.includes(row.getValue(id));
+    },
   },
   {
     accessorKey: "name",
@@ -43,7 +62,7 @@ const columns: ColumnDef<Title>[] = [
         <div className="flex">
           <HoverCard>
             <HoverCardTrigger asChild>
-              <div className="flex w-full flex-row space-x-2 font-bold hover:cursor-pointer">
+              <div className="flex w-[400px] flex-row space-x-2 font-bold hover:cursor-pointer">
                 <span className="text-lg">{row.getValue("name")}</span>
               </div>
             </HoverCardTrigger>
@@ -99,16 +118,26 @@ const columns: ColumnDef<Title>[] = [
     accessorKey: "genre",
     header: () => <Header>Genre</Header>,
     cell: ({ row }) => {
-      return <div>{row.getValue("genre")}</div>;
+      return <div className="w-[150px]">{row.getValue("genre")}</div>;
+    },
+    filterFn: (row, id, value: string) => {
+      return value.includes(row.getValue(id));
     },
   },
   {
     accessorKey: "isWatched",
+    accessorFn: ({ isWatched }) => {
+      if (isWatched) {
+        return "true";
+      } else {
+        return "false";
+      }
+    },
     header: () => <Header>Watched</Header>,
     cell: ({ row }) => {
       return (
         <div className="flex w-[50px] translate-x-1.5 justify-center">
-          {!row.getValue("isWatched") ? (
+          {row.getValue("isWatched") === "false" ? (
             <CircleDashed className="text-red-500" />
           ) : (
             <CheckCircle className="text-green-500" />
@@ -132,14 +161,80 @@ const columns: ColumnDef<Title>[] = [
       }
     },
   },
+  {
+    id: "watchedBy",
+    accessorFn: ({ titlesToUsers }) => {
+      return titlesToUsers.map(({ user }) => {
+        if (user) {
+          return user.name;
+        } else {
+          return null;
+        }
+      });
+    },
+    filterFn: (row, id, value: string[]) => {
+      const data: string[] = row.getValue(id);
+      for (const rowData of data) {
+        for (const rowValue of value) {
+          if (rowData === rowValue) {
+            return true;
+          }
+        }
+      }
+      return false;
+    },
+  },
+  {
+    id: "notWatchedBy",
+    accessorFn: ({ titlesToUsers }) => {
+      return titlesToUsers.map(({ user }) => {
+        if (user) {
+          return user.name;
+        } else {
+          return null;
+        }
+      });
+    },
+    filterFn: (row, id, value: string[]) => {
+      const data: string[] = row.getValue(id);
+      for (const rowData of data) {
+        for (const rowValue of value) {
+          if (rowData === rowValue) {
+            return false;
+          }
+        }
+      }
+      return true;
+    },
+  },
 ];
+
+const initialTableState: InitialTableState = {
+  columnVisibility: {
+    watchedBy: false,
+    notWatchedBy: false,
+  },
+};
 
 export function TitlesView() {
   const { data } = api.titles.getAll.useQuery();
 
   if (data) {
-    return <DataTable data={data} columns={columns} />;
+    return (
+      <DataTable
+        data={data}
+        // @ts-expect-error TS says that the types don't match, but it still works.
+        columns={columns}
+        initialState={initialTableState}
+      />
+    );
   } else {
-    return <DataTableLoader columns={columns} numberOfSkeletons={7} />;
+    return (
+      <DataTableLoader
+        columns={columns}
+        numberOfSkeletons={7}
+        initialState={initialTableState}
+      />
+    );
   }
 }

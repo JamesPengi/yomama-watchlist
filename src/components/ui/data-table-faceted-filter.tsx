@@ -8,6 +8,7 @@ import { Badge } from "./badge";
 import {
   Command,
   CommandGroup,
+  CommandInput,
   CommandItem,
   CommandList,
   CommandSeparator,
@@ -19,8 +20,8 @@ interface DataTableFacetedFilter<TData, TValue> {
   title?: string;
   options: {
     label: string;
-    value: boolean;
-    icon: React.ComponentType<{ className?: string }>;
+    value: string;
+    icon?: React.ComponentType<{ className?: string }>;
   }[];
 }
 
@@ -30,7 +31,7 @@ export function DataTableFacetedFilter<TData, TValue>({
   options,
 }: DataTableFacetedFilter<TData, TValue>) {
   const facets = column?.getFacetedUniqueValues();
-  const selectedValues = new Set(column?.getFilterValue() as boolean[]);
+  const selectedValues = new Set(column?.getFilterValue() as string[]);
 
   return (
     <Popover>
@@ -77,6 +78,12 @@ export function DataTableFacetedFilter<TData, TValue>({
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0" align="start">
         <Command>
+          {options.length > 3 && (
+            <>
+              <CommandInput placeholder={title} />
+              <CommandSeparator />
+            </>
+          )}
           <CommandList>
             <CommandGroup>
               {options.map((option) => {

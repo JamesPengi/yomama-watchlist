@@ -17,20 +17,24 @@ import {
   getFilteredRowModel,
   getFacetedRowModel,
   getFacetedUniqueValues,
+  type InitialTableState,
 } from "@tanstack/react-table";
 
 interface DataTableProps<TData, TValue> {
   data: TData[];
   columns: ColumnDef<TData, TValue>[];
+  initialState: InitialTableState;
 }
 
 export function DataTable<TData, TValue>({
   data,
   columns,
+  initialState,
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
     columns,
+    initialState,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getFilteredRowModel: getFilteredRowModel(),

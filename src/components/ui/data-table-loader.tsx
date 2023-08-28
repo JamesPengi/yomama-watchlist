@@ -3,6 +3,7 @@ import {
   flexRender,
   getCoreRowModel,
   useReactTable,
+  type InitialTableState,
 } from "@tanstack/react-table";
 import {
   Table,
@@ -17,15 +18,18 @@ import { Skeleton } from "./skeleton";
 interface DataTableLoaderProps<TData, TValue> {
   numberOfSkeletons: number;
   columns: ColumnDef<TData, TValue>[];
+  initialState: InitialTableState;
 }
 
 export function DataTableLoader<TData, TValue>({
   columns,
   numberOfSkeletons,
+  initialState,
 }: DataTableLoaderProps<TData, TValue>) {
   const table = useReactTable({
     data: [],
     columns,
+    initialState,
     getCoreRowModel: getCoreRowModel(),
   });
   const generateSkeletons = (numberOfSkeletons: number): JSX.Element[] => {

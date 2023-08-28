@@ -9,7 +9,6 @@ export default defineConfig({
     public: {
       titles({ row }) {
         return {
-          isWatched: copycat.bool(row.isWatched),
           dateWatched: copycat.dateString(row.dateWatched),
           dateAdded: copycat.dateString(row.dateAdded),
         };
