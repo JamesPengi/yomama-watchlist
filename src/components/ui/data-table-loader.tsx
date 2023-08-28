@@ -3,7 +3,7 @@ import {
   flexRender,
   getCoreRowModel,
   useReactTable,
-  InitialTableState,
+  type InitialTableState,
 } from "@tanstack/react-table";
 import {
   Table,

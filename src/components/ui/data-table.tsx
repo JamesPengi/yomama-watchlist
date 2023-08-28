@@ -17,7 +17,7 @@ import {
   getFilteredRowModel,
   getFacetedRowModel,
   getFacetedUniqueValues,
-  InitialTableState,
+  type InitialTableState,
 } from "@tanstack/react-table";
 
 interface DataTableProps<TData, TValue> {

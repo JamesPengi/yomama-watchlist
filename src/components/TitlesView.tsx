@@ -174,9 +174,9 @@ const columns: ColumnDef<{
     },
     filterFn: (row, id, value: string[]) => {
       const data: string[] = row.getValue(id);
-      for (let i = 0; i < data.length; i++) {
-        for (let j = 0; j < value.length; j++) {
-          if (data[i] === value[j]) {
+      for (const rowData of data) {
+        for (const rowValue of value) {
+          if (rowData === rowValue) {
             return true;
           }
         }
@@ -197,9 +197,9 @@ const columns: ColumnDef<{
     },
     filterFn: (row, id, value: string[]) => {
       const data: string[] = row.getValue(id);
-      for (let i = 0; i < data.length; i++) {
-        for (let j = 0; j < value.length; j++) {
-          if (data[i] === value[j]) {
+      for (const rowData of data) {
+        for (const rowValue of value) {
+          if (rowData === rowValue) {
             return false;
           }
         }
