@@ -10,6 +10,7 @@ import {
   XCircleIcon,
 } from "lucide-react";
 import { DataTableFacetedFilter } from "./data-table-faceted-filter";
+import { api } from "~/utils/api";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
@@ -18,8 +19,20 @@ interface DataTableToolbarProps<TData> {
 export function DataTableToolbar<TData>({
   table,
 }: DataTableToolbarProps<TData>) {
+  const { data: usersData } = api.users.getAll.useQuery();
   const isFiltered = table.getState().columnFilters.length > 0;
-
+  const isWatchedFiltered = table.getState().columnFilters.find((value) => {
+    // @ts-expect-error value.value of the row 'isWatched' is always an array in this implementation
+    if (value.id === "isWatched" && value.value[0] === "true") {
+      return true;
+    }
+  });
+  const isNotWatchedFiltered = table.getState().columnFilters.find((value) => {
+    // @ts-expect-error value.value of the row 'isWatched' is always an array in this implementation
+    if (value.id === "isWatched" && value.value[0] === "false") {
+      return true;
+    }
+  });
   return (
     <div className="flex items-center justify-between">
       <div className="flex flex-1 items-center space-x-2">
@@ -95,6 +108,40 @@ export function DataTableToolbar<TData>({
               };
             })}
           />
+        )}
+
+        {isWatchedFiltered && (
+          <>
+            {table.getColumn("watchedBy") && usersData && (
+              <DataTableFacetedFilter
+                column={table.getColumn("watchedBy")}
+                title="Watched by"
+                options={usersData.map((user) => {
+                  return {
+                    label: user.name,
+                    value: user.name,
+                  };
+                })}
+              />
+            )}
+          </>
+        )}
+
+        {!isWatchedFiltered && !isNotWatchedFiltered && (
+          <>
+            {table.getColumn("notWatchedBy") && usersData && (
+              <DataTableFacetedFilter
+                column={table.getColumn("notWatchedBy")}
+                title="Not watched by"
+                options={usersData.map((user) => {
+                  return {
+                    label: user.name,
+                    value: user.name,
+                  };
+                })}
+              />
+            )}
+          </>
         )}
 
         {isFiltered && (

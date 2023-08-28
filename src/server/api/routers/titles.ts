@@ -39,7 +39,21 @@ export const titlesRouter = createTRPCRouter({
       await db.insert(titles).values(parsedData);
     }),
   getAll: publicProcedure.query(async ({ ctx: { db } }) => {
-    return await db.select().from(titles).orderBy(desc(titles.dateAdded));
+    return await db.query.titles.findMany({
+      with: {
+        titlesToUsers: {
+          columns: {},
+          with: {
+            user: {
+              columns: {
+                name: true,
+              },
+            },
+          },
+        },
+      },
+      orderBy: [desc(titles.dateAdded)],
+    });
   }),
   markAsWatched: publicProcedure
     .input(
