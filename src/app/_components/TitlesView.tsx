@@ -224,7 +224,10 @@ const initialTableState: InitialTableState = {
 };
 
 export function TitlesView({ initialData }: TitlesViewProps) {
-  const { data } = trpc.titles.getAll.useQuery();
+  const { data } = trpc.titles.getAll.useQuery(undefined, {
+    // @ts-expect-error Stupid date string incompatibility
+    initialData: initialData,
+  });
 
   if (data) {
     return (
