@@ -21,7 +21,7 @@ export default function RootLayout({
     <html>
       <body
         className={twMerge(
-          "flex min-h-screen flex-col space-x-5 font-sans",
+          "flex min-h-screen flex-col font-sans",
           fontSans.variable
         )}
       >
