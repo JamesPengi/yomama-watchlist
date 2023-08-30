@@ -8,7 +8,7 @@
  */
 
 import { initTRPC } from "@trpc/server";
-import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
+import type { FetchCreateContextFnOptions } from "@trpc/server/adapters/fetch";
 import superjson from "superjson";
 import { ZodError } from "zod";
 
@@ -34,7 +34,7 @@ import { ZodError } from "zod";
  *
  * @see https://create.t3.gg/en/usage/trpc#-serverapitrpcts
  */
-const createInnerTRPCContext = (_opts: CreateNextContextOptions) => {
+const createInnerTRPCContext = (_opts: FetchCreateContextFnOptions) => {
   return {};
 };
 
@@ -44,7 +44,7 @@ const createInnerTRPCContext = (_opts: CreateNextContextOptions) => {
  *
  * @see https://trpc.io/docs/context
  */
-export const createTRPCContext = (_opts: CreateNextContextOptions) => {
+export const createTRPCContext = (_opts: FetchCreateContextFnOptions) => {
   return createInnerTRPCContext(_opts);
 };
 
