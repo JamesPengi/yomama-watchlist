@@ -9,7 +9,6 @@ import { CheckCircle, CircleDashed, YoutubeIcon } from "lucide-react";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "./ui/hover-card";
 import Link from "next/link";
 import Image from "next/image";
-import { DataTableLoader } from "./ui/data-table-loader";
 import { Badge } from "./ui/badge";
 import { Separator } from "./ui/separator";
 import { ScrollArea } from "./ui/scroll-area";
