@@ -11,7 +11,6 @@ import { initTRPC } from "@trpc/server";
 import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
 import superjson from "superjson";
 import { ZodError } from "zod";
-import { db } from "~/db/drizzle";
 
 /**
  * 1. CONTEXT
@@ -36,9 +35,7 @@ import { db } from "~/db/drizzle";
  * @see https://create.t3.gg/en/usage/trpc#-serverapitrpcts
  */
 const createInnerTRPCContext = (_opts: CreateNextContextOptions) => {
-  return {
-    db,
-  };
+  return {};
 };
 
 /**
