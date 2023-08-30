@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { createTRPCRouter, publicProcedure } from "../trpc";
+import { router, publicProcedure } from "../trpc";
 import { env } from "~/env.mjs";
 import { titles, titlesToUsers } from "~/db/schema";
 import type { TitleToUser__Insert, Title__Insert } from "~/db/drizzle";
@@ -12,7 +12,7 @@ import { db } from "~/db/drizzle";
 const TMDB_BASE_URL =
   "https://api.themoviedb.org/3/search/multi?include_adult=false&language=en-US&page=1";
 
-export const titlesRouter = createTRPCRouter({
+export const titlesRouter = router({
   quickAdd: publicProcedure
     .input(z.string().min(2))
     .mutation(async ({ input }) => {

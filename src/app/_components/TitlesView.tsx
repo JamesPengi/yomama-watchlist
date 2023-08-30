@@ -159,9 +159,7 @@ const columns: ColumnDef<{
   {
     id: "actions",
     cell: ({ row }) => {
-      const { data: usersData } = trpc.users.getAll.useQuery(undefined, {
-        initialData: [],
-      });
+      const { data: usersData } = trpc.users.getAll.useQuery();
 
       if (usersData) {
         return <DataTableRowActions row={row} userData={usersData} />;
@@ -226,9 +224,7 @@ const initialTableState: InitialTableState = {
 };
 
 export function TitlesView({ initialData }: TitlesViewProps) {
-  const { data } = trpc.titles.getAll.useQuery(undefined, {
-    initialData: initialData,
-  });
+  const { data } = trpc.titles.getAll.useQuery();
 
   if (data) {
     return (

@@ -1,5 +1,5 @@
-import { httpBatchLink } from "@trpc/client";
-import { appRouter } from "~/server/api/root";
+import { createTRPCProxyClient, httpBatchLink } from "@trpc/client";
+import { AppRouter, appRouter } from "~/server/api/";
 import { getBaseUrl } from "./shared";
 
 export const serverClient = appRouter.createCaller({
