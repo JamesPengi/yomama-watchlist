@@ -164,7 +164,7 @@ const columns: ColumnDef<{
       if (usersData) {
         return <DataTableRowActions row={row} userData={usersData} />;
       } else {
-        return <Skeleton className="flex h-8 w-8 p-0" />;
+        return <Skeleton className="flex h-8 w-8 rounded-full p-0" />;
       }
     },
   },
@@ -228,22 +228,12 @@ export function TitlesView({ initialData }: TitlesViewProps) {
     initialData: initialData,
   });
 
-  if (data) {
-    return (
-      <DataTable
-        data={data}
-        // @ts-expect-error TS says that the types don't match, but it still works.
-        columns={columns}
-        initialState={initialTableState}
-      />
-    );
-  } else {
-    return (
-      <DataTableLoader
-        columns={columns}
-        numberOfSkeletons={7}
-        initialState={initialTableState}
-      />
-    );
-  }
+  return (
+    <DataTable
+      data={data}
+      // @ts-expect-error TS says that the types don't match, but it still works.
+      columns={columns}
+      initialState={initialTableState}
+    />
+  );
 }
