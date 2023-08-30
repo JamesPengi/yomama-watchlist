@@ -3,7 +3,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState } from "react";
 import { trpc } from "./client";
-import { httpBatchLink, loggerLink } from "@trpc/client";
+import { httpBatchLink } from "@trpc/client";
 import { getBaseUrl } from "./shared";
 
 export default function Provider({ children }: { children: React.ReactNode }) {
