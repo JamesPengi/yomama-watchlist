@@ -3,6 +3,7 @@ import React from "react";
 import Provider from "./_trpc/Provider";
 import { twMerge } from "tailwind-merge";
 import { Rubik } from "next/font/google";
+import "./globals.css";
 
 const fontSans = Rubik({ subsets: ["latin"], variable: "--font-sans" });
 
