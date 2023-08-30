@@ -7,6 +7,7 @@ import type { tmdbResponse } from "~/utils/tmdbSchema";
 import { TRPCError } from "@trpc/server";
 import { desc, eq, sql } from "drizzle-orm";
 import { parseTmdbResponse } from "~/utils/parseTmdbResponse";
+import { db } from "~/db/drizzle";
 
 const TMDB_BASE_URL =
   "https://api.themoviedb.org/3/search/multi?include_adult=false&language=en-US&page=1";
@@ -14,7 +15,7 @@ const TMDB_BASE_URL =
 export const titlesRouter = createTRPCRouter({
   quickAdd: publicProcedure
     .input(z.string().min(2))
-    .mutation(async ({ input, ctx: { db } }) => {
+    .mutation(async ({ input }) => {
       const { results: apiResponse }: tmdbResponse = (await (
         await fetch(`${TMDB_BASE_URL}&query=${input}`, {
           method: "GET",
@@ -38,7 +39,7 @@ export const titlesRouter = createTRPCRouter({
 
       await db.insert(titles).values(parsedData);
     }),
-  getAll: publicProcedure.query(async ({ ctx: { db } }) => {
+  getAll: publicProcedure.query(async () => {
     return await db.query.titles.findMany({
       with: {
         titlesToUsers: {
@@ -64,7 +65,7 @@ export const titlesRouter = createTRPCRouter({
         usersWatched: z.array(z.object({ id: z.number(), name: z.string() })),
       })
     )
-    .mutation(async ({ input, ctx: { db } }) => {
+    .mutation(async ({ input }) => {
       const titlesToUsersValues: TitleToUser__Insert[] = [];
 
       input.usersWatched.forEach((value) => {
@@ -86,7 +87,7 @@ export const titlesRouter = createTRPCRouter({
     }),
   markAsNotWatched: publicProcedure
     .input(z.object({ id: z.number().min(0) }))
-    .mutation(async ({ input, ctx: { db } }) => {
+    .mutation(async ({ input }) => {
       await db.transaction(async (tx) => {
         await tx
           .update(titles)
@@ -104,7 +105,7 @@ export const titlesRouter = createTRPCRouter({
     }),
   delete: publicProcedure
     .input(z.number().min(0))
-    .mutation(async ({ input, ctx: { db } }) => {
+    .mutation(async ({ input }) => {
       await db.transaction(async (tx) => {
         await tx.delete(titlesToUsers).where(eq(titlesToUsers.titleId, input));
         await tx.delete(titles).where(eq(titles.id, input));
