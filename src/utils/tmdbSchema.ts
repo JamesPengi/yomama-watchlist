@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 export type tmdbResult = {
   adult: boolean;
   backdrop_path: string;
@@ -26,35 +28,40 @@ export type tmdbResponse = {
   total_results: number;
 };
 
-export type tmdbGenreName =
-  | "Action"
-  | "Action & Adventure"
-  | "Adventure"
-  | "Animation"
-  | "Comedy"
-  | "Crime"
-  | "Documentary"
-  | "Drama"
-  | "Family"
-  | "Fantasy"
-  | "History"
-  | "Horror"
-  | "Kids"
-  | "Music"
-  | "Mystery"
-  | "News"
-  | "Reality"
-  | "Romance"
-  | "Sci-Fi & Fantasy"
-  | "Science Fiction"
-  | "Soap"
-  | "Talk"
-  | "TV Movie"
-  | "Thriller"
-  | "War"
-  | "War & Politics"
-  | "Western"
-  | "Unknown";
+export const tmdbMediaTypeEnum = z.enum(["movie", "tv", "anime"]);
+export type tmdbMediaType = z.infer<typeof tmdbMediaTypeEnum>;
+
+export const tmdbGenreNameEnum = z.enum([
+  "Action",
+  "Action & Adventure",
+  "Adventure",
+  "Animation",
+  "Comedy",
+  "Crime",
+  "Documentary",
+  "Drama",
+  "Family",
+  "Fantasy",
+  "History",
+  "Horror",
+  "Kids",
+  "Music",
+  "Mystery",
+  "News",
+  "Reality",
+  "Romance",
+  "Sci-Fi & Fantasy",
+  "Science Fiction",
+  "Soap",
+  "Talk",
+  "TV Movie",
+  "Thriller",
+  "War",
+  "War & Politics",
+  "Western",
+  "Unknown",
+]);
+export type tmdbGenreName = z.infer<typeof tmdbGenreNameEnum>;
 
 export function getReadableGenreName(id: number): tmdbGenreName {
   switch (id) {

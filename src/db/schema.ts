@@ -11,39 +11,11 @@ import {
   integer,
   primaryKey,
 } from "drizzle-orm/pg-core";
+import { tmdbGenreNameEnum, tmdbMediaTypeEnum } from "~/utils/tmdbSchema";
 
-export const genreEnum = pgEnum("genre", [
-  "Action",
-  "Action & Adventure",
-  "Adventure",
-  "Animation",
-  "Comedy",
-  "Crime",
-  "Documentary",
-  "Drama",
-  "Family",
-  "Fantasy",
-  "History",
-  "Horror",
-  "Kids",
-  "Music",
-  "Mystery",
-  "News",
-  "Reality",
-  "Romance",
-  "Sci-Fi & Fantasy",
-  "Science Fiction",
-  "Soap",
-  "Talk",
-  "TV Movie",
-  "Thriller",
-  "War",
-  "War & Politics",
-  "Western",
-  "Unknown",
-]);
+export const genreEnum = pgEnum("genre", tmdbGenreNameEnum.options);
 
-export const mediaTypeEnum = pgEnum("mediaType", ["movie", "tv", "anime"]);
+export const mediaTypeEnum = pgEnum("mediaType", tmdbMediaTypeEnum.options);
 
 export const titles = pgTable("titles", {
   id: serial("id").primaryKey(),

@@ -8,11 +8,18 @@ import {
   CheckCircleIcon,
   CircleDashedIcon,
   ClapperboardIcon,
+  DicesIcon,
   TvIcon,
   XCircleIcon,
 } from "lucide-react";
 import { DataTableFacetedFilter } from "./data-table-faceted-filter";
 import { trpc } from "~/app/_trpc/client";
+import {
+  tmdbGenreNameEnum,
+  type tmdbGenreName,
+  type tmdbMediaType,
+  tmdbMediaTypeEnum,
+} from "~/utils/tmdbSchema";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
@@ -22,6 +29,12 @@ export function DataTableToolbar<TData>({
   table,
 }: DataTableToolbarProps<TData>) {
   const { data: usersData } = trpc.users.getAll.useQuery();
+  const getRandomMovieMutation = trpc.titles.getRandom.useMutation({
+    onSuccess(data) {
+      table.getColumn("name")?.setFilterValue(data?.name);
+    },
+  });
+
   const isFiltered = table.getState().columnFilters.length > 0;
   const isWatchedFiltered = table.getState().columnFilters.find((value) => {
     // @ts-expect-error value.value of the row 'isWatched' is always an array in this implementation
@@ -35,6 +48,25 @@ export function DataTableToolbar<TData>({
       return true;
     }
   });
+
+  const getRandomMovie = () => {
+    const types = table
+      .getState()
+      .columnFilters.find((value) => value.id === "mediaType");
+    const genres = table
+      .getState()
+      .columnFilters.find((value) => value.id === "genre");
+
+    getRandomMovieMutation.mutate({
+      type: types
+        ? (types.value as tmdbMediaType[])
+        : tmdbMediaTypeEnum.options,
+      genre: genres
+        ? (genres.value as tmdbGenreName[])
+        : tmdbGenreNameEnum.options,
+    });
+  };
+
   return (
     <div className="flex items-center justify-between">
       <div className="flex flex-1 items-center space-x-2">
@@ -74,36 +106,7 @@ export function DataTableToolbar<TData>({
           <DataTableFacetedFilter
             column={table.getColumn("genre")}
             title="Genre"
-            options={[
-              "Action",
-              "Action & Adventure",
-              "Adventure",
-              "Animation",
-              "Comedy",
-              "Crime",
-              "Documentary",
-              "Drama",
-              "Family",
-              "Fantasy",
-              "History",
-              "Horror",
-              "Kids",
-              "Music",
-              "Mystery",
-              "News",
-              "Reality",
-              "Romance",
-              "Sci-Fi & Fantasy",
-              "Science Fiction",
-              "Soap",
-              "Talk",
-              "TV Movie",
-              "Thriller",
-              "War",
-              "War & Politics",
-              "Western",
-              "Unknown",
-            ].map((genre) => {
+            options={tmdbGenreNameEnum.options.map((genre) => {
               return {
                 label: genre,
                 value: genre,
@@ -156,6 +159,11 @@ export function DataTableToolbar<TData>({
           </Button>
         )}
       </div>
+      {isNotWatchedFiltered && (
+        <Button variant="secondary" onClick={getRandomMovie}>
+          Get Random Title <DicesIcon className="ml-2" />
+        </Button>
+      )}
     </div>
   );
 }
