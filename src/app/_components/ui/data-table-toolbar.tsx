@@ -18,6 +18,7 @@ import {
   tmdbGenreNameEnum,
   type tmdbGenreName,
   type tmdbMediaType,
+  tmdbMediaTypeEnum,
 } from "~/utils/tmdbSchema";
 
 interface DataTableToolbarProps<TData> {
@@ -55,16 +56,15 @@ export function DataTableToolbar<TData>({
     const genres = table
       .getState()
       .columnFilters.find((value) => value.id === "genre");
-    if (types ?? genres) {
-      getRandomMovieMutation.mutate({
-        type: types!.value as tmdbMediaType[],
-        genre: genres?.value as tmdbGenreName[],
-      });
-    } else {
-      getRandomMovieMutation.mutate({
-        type: ["movie", "tv", "anime"],
-      });
-    }
+
+    getRandomMovieMutation.mutate({
+      type: types
+        ? (types.value as tmdbMediaType[])
+        : tmdbMediaTypeEnum.options,
+      genre: genres
+        ? (genres.value as tmdbGenreName[])
+        : tmdbGenreNameEnum.options,
+    });
   };
 
   return (

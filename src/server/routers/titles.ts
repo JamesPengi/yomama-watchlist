@@ -111,33 +111,20 @@ export const titlesRouter = router({
     .input(
       z.object({
         type: z.array(z.enum(tmdbMediaTypeEnum.options)),
-        genre: z.optional(z.array(z.enum(tmdbGenreNameEnum.options))),
+        genre: z.array(z.enum(tmdbGenreNameEnum.options)),
       })
     )
     .mutation(async ({ input }) => {
-      let data;
-      if (input.genre) {
-        data = await db
-          .select()
-          .from(titles)
-          .where(
-            and(
-              eq(titles.isWatched, false),
-              inArray(titles.mediaType, input.type),
-              inArray(titles.genre, input.genre)
-            )
-          );
-      } else {
-        data = await db
-          .select()
-          .from(titles)
-          .where(
-            and(
-              eq(titles.isWatched, false),
-              inArray(titles.mediaType, input.type)
-            )
-          );
-      }
+      const data = await db
+        .select()
+        .from(titles)
+        .where(
+          and(
+            eq(titles.isWatched, false),
+            inArray(titles.mediaType, input.type),
+            inArray(titles.genre, input.genre)
+          )
+        );
       const randomNumber = Math.floor(Math.random() * data.length);
       return data[randomNumber];
     }),
