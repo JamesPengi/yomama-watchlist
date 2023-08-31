@@ -3,9 +3,13 @@ import { router, publicProcedure } from "../trpc";
 import { env } from "~/env.mjs";
 import { titles, titlesToUsers } from "~/db/schema";
 import type { TitleToUser__Insert, Title__Insert } from "~/db/drizzle";
-import type { tmdbResponse } from "~/utils/tmdbSchema";
+import {
+  tmdbGenreNameEnum,
+  tmdbMediaTypeEnum,
+  type tmdbResponse,
+} from "~/utils/tmdbSchema";
 import { TRPCError } from "@trpc/server";
-import { desc, eq, sql } from "drizzle-orm";
+import { desc, eq, sql, and, inArray } from "drizzle-orm";
 import { parseTmdbResponse } from "~/utils/parseTmdbResponse";
 import { db } from "~/db/drizzle";
 
@@ -102,6 +106,40 @@ export const titlesRouter = router({
           .delete(titlesToUsers)
           .where(eq(titlesToUsers.titleId, input.id));
       });
+    }),
+  getRandom: publicProcedure
+    .input(
+      z.object({
+        type: z.array(z.enum(tmdbMediaTypeEnum.options)),
+        genre: z.optional(z.array(z.enum(tmdbGenreNameEnum.options))),
+      })
+    )
+    .mutation(async ({ input }) => {
+      let data;
+      if (input.genre) {
+        data = await db
+          .select()
+          .from(titles)
+          .where(
+            and(
+              eq(titles.isWatched, false),
+              inArray(titles.mediaType, input.type),
+              inArray(titles.genre, input.genre)
+            )
+          );
+      } else {
+        data = await db
+          .select()
+          .from(titles)
+          .where(
+            and(
+              eq(titles.isWatched, false),
+              inArray(titles.mediaType, input.type)
+            )
+          );
+      }
+      const randomNumber = Math.floor(Math.random() * data.length);
+      return data[randomNumber];
     }),
   delete: publicProcedure
     .input(z.number().min(0))
