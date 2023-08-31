@@ -21,6 +21,9 @@ import {
   type InitialTableState,
 } from "@tanstack/react-table";
 
+import autoAnimate from "@formkit/auto-animate";
+import { useEffect, useRef } from "react";
+
 interface DataTableProps<TData, TValue> {
   data: TData[];
   columns: ColumnDef<TData, TValue>[];
@@ -42,6 +45,11 @@ export function DataTable<TData, TValue>({
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
   });
+
+  const parent = useRef(null);
+  useEffect(() => {
+    parent.current && autoAnimate(parent.current);
+  }, [parent]);
 
   return (
     <div className="space-y-4">
@@ -66,7 +74,7 @@ export function DataTable<TData, TValue>({
               );
             })}
           </TableHeader>
-          <TableBody>
+          <TableBody ref={parent}>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => {
                 return (
