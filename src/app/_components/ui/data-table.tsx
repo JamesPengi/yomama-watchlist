@@ -26,7 +26,7 @@ import Image from "next/image";
 
 import autoAnimate from "@formkit/auto-animate";
 import { useEffect, useRef } from "react";
-import { Dialog, DialogContent, DialogTrigger } from "./dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTrigger } from "./dialog";
 import type { getAllResponse } from "~/types/ApiResponses";
 
 import { Badge } from "./badge";
@@ -106,6 +106,19 @@ export function DataTable<TValue>({
                       </TableRow>
                     </DialogTrigger>
                     <DialogContent>
+                      <DialogHeader>
+                        <div className="space-y-2">
+                          <h4 className="text-2xl font-extrabold">
+                            {row.getValue("name")}
+                          </h4>
+                          <Badge
+                            variant={row.original.mediaType}
+                            className="uppercase"
+                          >
+                            {row.original.mediaType}
+                          </Badge>
+                        </div>
+                      </DialogHeader>
                       <div className="flex space-x-5">
                         <div className="min-w-[200px]">
                           <Image
@@ -120,28 +133,18 @@ export function DataTable<TValue>({
                         </div>
 
                         <div className="space-y-5">
-                          <div className="space-y-2">
-                            <h4 className="text-2xl font-extrabold">
-                              {row.getValue("name")}
-                            </h4>
-                            <Badge variant="default" className="uppercase">
-                              {row.original.mediaType}
-                            </Badge>
-                          </div>
-                          <ScrollArea className="h-32">
+                          <ScrollArea className="h-[200px]">
                             {row.original.tmdbOverview}
                           </ScrollArea>
                           <div className="space-y-2">
                             <Separator />
-                            <div>
+                            <div className=" flex flex-col items-center">
+                              <span>Watch Trailer</span>
                               <Link
                                 href={`https://www.youtube.com/results?search_query=${row.original.name} Official Trailer`}
                                 target="_blank"
                               >
-                                <div className="flex flex-col items-center">
-                                  <YoutubeIcon className="h-10 w-10" />
-                                  <span className="text-[12px]">Trailer</span>
-                                </div>
+                                <YoutubeIcon className="h-10 w-10" />
                               </Link>
                             </div>
                           </div>
