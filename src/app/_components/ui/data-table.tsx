@@ -34,6 +34,7 @@ import { ScrollArea } from "./scroll-area";
 import { Separator } from "./separator";
 import Link from "next/link";
 import { YoutubeIcon } from "lucide-react";
+import { shimmer, toBase64 } from "~/utils/ImageShimmer";
 
 interface DataTableProps<TValue> {
   data: getAllResponse[];
@@ -109,9 +110,12 @@ export function DataTable<TValue>({
                         <div className="min-w-[200px]">
                           <Image
                             src={`https://image.tmdb.org/t/p/w500${row.original.tmdbPosterPath}`}
-                            width={500}
-                            height={500}
+                            width={200}
+                            height={300}
                             alt={`Movie poster of ${row.original.name}`}
+                            placeholder={`data:image/svg+xml;base64,${toBase64(
+                              shimmer(200, 300)
+                            )}`}
                           />
                         </div>
 
