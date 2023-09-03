@@ -84,18 +84,6 @@ const columns: ColumnDef<getAllResponse>[] = [
     },
   },
   {
-    id: "actions",
-    cell: ({ row }) => {
-      const { data: usersData } = trpc.users.getAll.useQuery();
-
-      if (usersData) {
-        return <DataTableRowActions row={row} userData={usersData} />;
-      } else {
-        return <Skeleton className="flex h-8 w-8 rounded-full p-0" />;
-      }
-    },
-  },
-  {
     id: "watchedBy",
     accessorFn: ({ titlesToUsers }) => {
       return titlesToUsers.map(({ user }) => {

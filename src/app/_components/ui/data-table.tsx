@@ -22,19 +22,10 @@ import {
   type Row,
 } from "@tanstack/react-table";
 
-import Image from "next/image";
-
 import autoAnimate from "@formkit/auto-animate";
 import { useEffect, useRef } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTrigger } from "./dialog";
-import type { getAllResponse } from "~/types/ApiResponses";
-
-import { Badge } from "./badge";
-import { ScrollArea } from "./scroll-area";
-import { Separator } from "./separator";
 import Link from "next/link";
-import { YoutubeIcon } from "lucide-react";
-import { shimmer, toBase64 } from "~/utils/ImageShimmer";
+import type { getAllResponse } from "~/types/ApiResponses";
 
 interface DataTableProps<TValue> {
   data: getAllResponse[];
@@ -90,68 +81,27 @@ export function DataTable<TValue>({
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row: Row<getAllResponse>) => {
                 return (
-                  <Dialog key={row.id}>
-                    <DialogTrigger asChild>
-                      <TableRow key={row.id} className="hover:cursor-pointer">
-                        {row.getVisibleCells().map((cell) => {
-                          return (
-                            <TableCell key={cell.id}>
+                  <TableRow className="hover:cursor-pointer" key={row.id}>
+                    {row.getVisibleCells().map((cell) => {
+                      return (
+                        <TableCell key={cell.id}>
+                          {cell.column.id !== "isWatched" ? (
+                            <Link href={`/title/${row.original.id}`}>
                               {flexRender(
                                 cell.column.columnDef.cell,
                                 cell.getContext()
                               )}
-                            </TableCell>
-                          );
-                        })}
-                      </TableRow>
-                    </DialogTrigger>
-                    <DialogContent>
-                      <DialogHeader>
-                        <div className="space-y-2">
-                          <h4 className="text-2xl font-extrabold">
-                            {row.getValue("name")}
-                          </h4>
-                          <Badge
-                            variant={row.original.mediaType}
-                            className="uppercase"
-                          >
-                            {row.original.mediaType}
-                          </Badge>
-                        </div>
-                      </DialogHeader>
-                      <div className="flex space-x-5">
-                        <div className="min-w-[200px]">
-                          <Image
-                            src={`https://image.tmdb.org/t/p/w500${row.original.tmdbPosterPath}`}
-                            width={200}
-                            height={300}
-                            alt={`Movie poster of ${row.original.name}`}
-                            placeholder={`data:image/svg+xml;base64,${toBase64(
-                              shimmer(200, 300)
-                            )}`}
-                          />
-                        </div>
-
-                        <div className="space-y-5">
-                          <ScrollArea className="h-[200px]">
-                            {row.original.tmdbOverview}
-                          </ScrollArea>
-                          <div className="space-y-2">
-                            <Separator />
-                            <div className=" flex flex-col items-center">
-                              <span>Watch Trailer</span>
-                              <Link
-                                href={`https://www.youtube.com/results?search_query=${row.original.name} Official Trailer`}
-                                target="_blank"
-                              >
-                                <YoutubeIcon className="h-10 w-10" />
-                              </Link>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </DialogContent>
-                  </Dialog>
+                            </Link>
+                          ) : (
+                            flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext()
+                            )
+                          )}
+                        </TableCell>
+                      );
+                    })}
+                  </TableRow>
                 );
               })
             ) : (
