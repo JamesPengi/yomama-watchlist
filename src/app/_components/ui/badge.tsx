@@ -15,9 +15,11 @@ const badgeVariants = cva(
         destructive:
           "border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80",
         outline: "text-foreground",
-        movie: "border-transparent bg-blue-700 text-secondary-foreground",
-        tv: "border-transparent bg-purple-700 text-secondary-foreground",
-        anime: "border-transparent bg-yellow-700 text-secondary-foreground",
+        movie:
+          "border-transparent bg-blue-700 text-secondary-foreground uppercase",
+        tv: "border-transparent bg-purple-700 text-secondary-foreground uppercase",
+        anime:
+          "border-transparent bg-yellow-700 text-secondary-foreground uppercase",
       },
     },
     defaultVariants: {
