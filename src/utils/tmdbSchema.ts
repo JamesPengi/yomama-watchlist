@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export type tmdbResult = {
+export type tmdbGeneralQueryResult = {
   adult: boolean;
   backdrop_path: string;
   id: number;
@@ -21,11 +21,83 @@ export type tmdbResult = {
   origin_country: string[];
 };
 
-export type tmdbResponse = {
+export type tmdbGeneralQueryResponse = {
   page: number;
-  results: tmdbResult[];
+  results: tmdbGeneralQueryResult[];
   total_pages: number;
   total_results: number;
+};
+
+export type tmdbMovieQueryResult = {
+  adult: boolean;
+  backdrop_path: string;
+  budget: number;
+  credits: tmdbCredits;
+  genres: { id: number; name: string }[];
+  homepage: string;
+  id: number;
+  imdb_id: string;
+  original_language: string;
+  original_title: string;
+  overview: string;
+  popularity: string;
+  poster_path: string;
+  release_date: string;
+  runtime: number;
+  tagline: string;
+  title: string;
+  vote_average: number;
+  vote_count: number;
+};
+
+export type tmdbTVQueryResult = {
+  adult: boolean;
+  backdrop_path: string;
+  credits: tmdbCredits;
+  first_air_date: string;
+  genres: { id: number; name: string }[];
+  homepage: string;
+  id: number;
+  original_language: string;
+  original_title: string;
+  overview: string;
+  popularity: string;
+  poster_path: string;
+  release_date: string;
+  episode_runtime: number[];
+  tagline: string;
+  title: string;
+  vote_average: number;
+  vote_count: number;
+};
+
+export type tmdbCredits = {
+  cast: {
+    id: number;
+    known_for_department: string;
+    name: string;
+    profile_path: string;
+    character: string;
+  }[];
+  crew: {
+    id: number;
+    name: string;
+    known_for_department: string;
+    profile_path: string;
+    department: string;
+    job: string;
+  };
+};
+
+export type getOneApiResponse = {
+  id: number;
+  title: string;
+  credits: tmdbCredits;
+  releaseDate: string;
+  homepage: string;
+  runtime: number;
+  tagline: string;
+  imdbLink: string;
 };
 
 export const tmdbMediaTypeEnum = z.enum(["movie", "tv", "anime"]);

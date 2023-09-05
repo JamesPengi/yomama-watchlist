@@ -2,10 +2,10 @@ import type { Title__Insert } from "~/db/drizzle";
 import {
   getReadableGenreName,
   type tmdbGenreName,
-  type tmdbResult,
+  type tmdbGeneralQueryResult,
 } from "./tmdbSchema";
 
-export function parseTmdbResponse(data: tmdbResult): Title__Insert {
+export function parseTmdbResponse(data: tmdbGeneralQueryResult): Title__Insert {
   let mediaType: "movie" | "tv" | "anime" = "movie";
   let name = data.title;
 

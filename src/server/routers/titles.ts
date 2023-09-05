@@ -6,29 +6,35 @@ import type { TitleToUser__Insert, Title__Insert } from "~/db/drizzle";
 import {
   tmdbGenreNameEnum,
   tmdbMediaTypeEnum,
-  type tmdbResponse,
+  type tmdbGeneralQueryResponse,
+  type tmdbMovieQueryResult,
+  type tmdbTVQueryResult,
+  type getOneApiResponse,
 } from "~/utils/tmdbSchema";
 import { TRPCError } from "@trpc/server";
 import { desc, eq, sql, and, inArray } from "drizzle-orm";
 import { parseTmdbResponse } from "~/utils/parseTmdbResponse";
 import { db } from "~/db/drizzle";
 
-const TMDB_BASE_URL =
+const TMDB_MULTI_BASE_URL =
   "https://api.themoviedb.org/3/search/multi?include_adult=false&language=en-US&page=1";
+
+const TMDB_MOVIE_BASE_URL = "https://api.themoviedb.org/3/movie";
+const TMDB_TV_BASE_URL = "https://api.themoviedb.org/3/tv";
 
 export const titlesRouter = router({
   quickAdd: publicProcedure
     .input(z.string().min(2))
     .mutation(async ({ input }) => {
-      const { results: apiResponse }: tmdbResponse = (await (
-        await fetch(`${TMDB_BASE_URL}&query=${input}`, {
+      const { results: apiResponse }: tmdbGeneralQueryResponse = (await (
+        await fetch(`${TMDB_MULTI_BASE_URL}&query=${input}`, {
           method: "GET",
           headers: {
             accept: "application/json",
             Authorization: `Bearer ${env.TMDB_API_KEY}`,
           },
         })
-      ).json()) as tmdbResponse;
+      ).json()) as tmdbGeneralQueryResponse;
 
       const data = apiResponse[0];
 
@@ -59,6 +65,86 @@ export const titlesRouter = router({
       },
       orderBy: [desc(titles.dateAdded)],
     });
+  }),
+  getOne: publicProcedure.input(z.string()).query(async ({ input }) => {
+    if (isNaN(Number(input))) {
+      throw new TRPCError({ message: "Bad id number", code: "BAD_REQUEST" });
+    }
+
+    const dbData = await db.query.titles.findFirst({
+      with: {
+        titlesToUsers: {
+          columns: {},
+          with: {
+            user: {
+              columns: {
+                name: true,
+              },
+            },
+          },
+        },
+      },
+      orderBy: [desc(titles.dateAdded)],
+      where: eq(titles.id, Number(input)),
+    });
+
+    if (!dbData) {
+      throw new TRPCError({
+        message: "Could not find title with given id",
+        code: "BAD_REQUEST",
+      });
+    }
+
+    let apiData: getOneApiResponse;
+
+    if (dbData.mediaType === "movie") {
+      const apiResponse = (await (
+        await fetch(`${TMDB_MOVIE_BASE_URL}/${dbData.tmdbId}`, {
+          method: "GET",
+          headers: {
+            accept: "application/json",
+            Authorization: `Bearer ${env.TMDB_API_KEY}`,
+          },
+        })
+      ).json()) as tmdbMovieQueryResult;
+
+      apiData = {
+        id: apiResponse.id,
+        title: apiResponse.title,
+        credits: apiResponse.credits,
+        releaseDate: apiResponse.release_date,
+        homepage: apiResponse.release_date,
+        runtime: apiResponse.runtime,
+        tagline: apiResponse.tagline,
+        imdbLink: `title/${apiResponse.imdb_id}`,
+      };
+    } else {
+      const apiResponse = (await (
+        await fetch(`${TMDB_TV_BASE_URL}/${dbData.tmdbId}`, {
+          method: "GET",
+          headers: {
+            accept: "application/json",
+            Authorization: `Bearer ${env.TMDB_API_KEY}`,
+          },
+        })
+      ).json()) as tmdbTVQueryResult;
+
+      apiData = {
+        id: apiResponse.id,
+        title: apiResponse.title,
+        credits: apiResponse.credits,
+        releaseDate: apiResponse.release_date,
+        homepage: apiResponse.release_date,
+        runtime: apiResponse.episode_runtime[0]!,
+        tagline: apiResponse.tagline,
+        imdbLink: `find/?q=${apiResponse.title}`,
+      };
+    }
+
+    return {
+      db: dbData,
+      api: apiData,
+    };
   }),
   markAsWatched: publicProcedure
     .input(
