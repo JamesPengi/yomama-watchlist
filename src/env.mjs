@@ -8,7 +8,7 @@ export const env = createEnv({
    */
   server: {
     NODE_ENV: z.enum(["development", "test", "production"]),
-    TMDB_API_KEY: z.string(),
+    TMDB_AUTH_TOKEN: z.string(),
     DATABASE_URL: z.string().url(),
   },
 
@@ -25,7 +25,7 @@ export const env = createEnv({
    */
   runtimeEnv: {
     NODE_ENV: process.env.NODE_ENV,
-    TMDB_API_KEY: process.env.TMDB_API_KEY,
+    TMDB_AUTH_TOKEN: process.env.TMDB_AUTH_TOKEN,
     DATABASE_URL: process.env.DATABASE_URL,
   },
   /**

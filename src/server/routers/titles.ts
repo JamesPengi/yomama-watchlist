@@ -25,7 +25,7 @@ export const titlesRouter = router({
           method: "GET",
           headers: {
             accept: "application/json",
-            Authorization: `Bearer ${env.TMDB_API_KEY}`,
+            Authorization: `Bearer ${env.TMDB_AUTH_TOKEN}`,
           },
         })
       ).json()) as tmdbResponse;
