@@ -20,6 +20,7 @@ import {
   type tmdbMediaType,
   tmdbMediaTypeEnum,
 } from "~/types/tmdbSchema";
+import { useEffect, useRef } from "react";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
@@ -67,10 +68,27 @@ export function DataTableToolbar<TData>({
     });
   };
 
+  const filterRef = useRef(null);
+  useEffect(() => {
+    const down = (e: KeyboardEvent) => {
+      if (filterRef.current) {
+        if (e.key === "f" && (e.metaKey || e.ctrlKey)) {
+          e.preventDefault();
+          // @ts-expect-error I'm unsure how to type the ref, but this should always work
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+          filterRef.current.focus();
+        }
+      }
+    };
+    document.addEventListener("keydown", down);
+    return () => document.removeEventListener("keydown", down);
+  }, [filterRef]);
+
   return (
     <div className="flex items-center justify-between">
       <div className="flex flex-1 items-center space-x-2">
         <Input
+          ref={filterRef}
           placeholder="Search for your title..."
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
           onChange={(e) =>
