@@ -18,13 +18,13 @@ export default function RootLayout(props: { children: React.ReactNode }) {
     <html>
       <body
         className={twMerge(
-          "container flex flex-col space-y-10 font-sans",
+          "container mt-10 flex flex-col font-sans",
           fontSans.variable
         )}
       >
         <Provider>
           <QuickAdd />
-          {props.children}
+          <div className="mt-10">{props.children}</div>
         </Provider>
       </body>
     </html>
