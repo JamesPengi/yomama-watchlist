@@ -5,9 +5,9 @@ import {
   CircleDashed,
   CodesandboxIcon,
   ExternalLinkIcon,
-  QuoteIcon,
   YoutubeIcon,
 } from "lucide-react";
+import tmdbIcon from "~/assets/tmdb_logo.svg";
 import Image from "next/image";
 import { Badge } from "~/app/_components/ui/badge";
 import { Button } from "~/app/_components/ui/button";
@@ -183,7 +183,16 @@ export default function TitleView({
         </div>
       </CardContent>
       <CardFooter className="flex flex-row justify-between space-y-0">
-        <span>Powered by TMDB</span>
+        <div className="flex flex-row space-x-2">
+          <span>Powered by</span>
+          <Image
+            // Cannot asign tmdbIcon to a type because it's an svg file
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+            src={tmdbIcon}
+            alt="Powered by TMDB"
+            width={75}
+          />
+        </div>
         <Button variant="destructive">Delete</Button>
       </CardFooter>
     </Card>
