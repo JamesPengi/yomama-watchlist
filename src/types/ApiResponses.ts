@@ -14,8 +14,33 @@ export type getAllResponse = {
   userDescription: string | null;
   userRating: string | null;
   titlesToUsers: {
-    user?: {
+    user: {
       name: string;
     };
   }[];
+};
+
+export type getOneResponse = {
+  id: number;
+  title: string;
+  overview: string;
+  posterPath: string;
+  credits: {
+    actors: { name: string; profile_path: string; character: string }[];
+    directors: string[];
+    writers: string[];
+  };
+  releaseDate: string;
+  homepage?: string;
+  runtime: number | null;
+  tagline: string;
+  imdbLink: string;
+  trailerLink: string;
+  isWatched: boolean;
+  mediaType: tmdbMediaType;
+  userData?: {
+    watched: string[];
+    rating: number;
+    description: string;
+  };
 };

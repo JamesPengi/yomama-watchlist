@@ -12,8 +12,13 @@ import {
 } from "~/types/tmdbSchema";
 import { TRPCError } from "@trpc/server";
 import { desc, eq, sql, and, inArray } from "drizzle-orm";
-import { parseTmdbResponse } from "~/utils/parseTmdbResponse";
+import {
+  parseTmdbGeneralResponse,
+  parseTmdbMovieResponse,
+  parseTmdbTVResponse,
+} from "~/utils/parseTmdbResponse";
 import { db } from "~/db/drizzle";
+import { generateGetOneResponse } from "~/utils/generateResponse";
 
 const TMDB_MULTI_BASE_URL =
   "https://api.themoviedb.org/3/search/multi?include_adult=false&language=en-US&page=1";
@@ -44,7 +49,7 @@ export const titlesRouter = router({
         });
       }
 
-      const parsedData: Title__Insert = parseTmdbResponse(data);
+      const parsedData: Title__Insert = parseTmdbGeneralResponse(data);
 
       await db.insert(titles).values(parsedData);
     }),
@@ -90,66 +95,38 @@ export const titlesRouter = router({
     if (!dbData) {
       throw new TRPCError({
         message: "Could not find title with given id",
-        code: "BAD_REQUEST",
+        code: "NOT_FOUND",
       });
     }
 
-    let apiData: getOneApiResponse;
+    const apiResponse = (await (
+      await fetch(
+        `${
+          dbData.mediaType === "movie" ? TMDB_MOVIE_BASE_URL : TMDB_TV_BASE_URL
+        }/${dbData.tmdbId}?append_to_response=credits`,
+        {
+          method: "GET",
+          headers: {
+            accept: "application/json",
+            Authorization: `Bearer ${env.TMDB_AUTH_TOKEN}`,
+          },
+        }
+      )
+    ).json()) as tmdbMovieQueryResult | tmdbTVQueryResult;
 
-    if (dbData.mediaType === "movie") {
-      const apiResponse = (await (
-        await fetch(
-          `${TMDB_MOVIE_BASE_URL}/${dbData.tmdbId}?append_to_response=credits`,
-          {
-            method: "GET",
-            headers: {
-              accept: "application/json",
-              Authorization: `Bearer ${env.TMDB_AUTH_TOKEN}`,
-            },
-          }
-        )
-      ).json()) as tmdbMovieQueryResult;
-
-      apiData = {
-        id: apiResponse.id,
-        title: apiResponse.title,
-        credits: apiResponse.credits,
-        releaseDate: apiResponse.release_date.slice(0, 4),
-        homepage: apiResponse.release_date,
-        runtime: apiResponse.runtime,
-        tagline: apiResponse.tagline,
-        imdbLink: `title/${apiResponse.imdb_id}`,
-      };
-    } else {
-      const apiResponse = (await (
-        await fetch(
-          `${TMDB_TV_BASE_URL}/${dbData.tmdbId}?append_to_response=credits`,
-          {
-            method: "GET",
-            headers: {
-              accept: "application/json",
-              Authorization: `Bearer ${env.TMDB_AUTH_TOKEN}`,
-            },
-          }
-        )
-      ).json()) as tmdbTVQueryResult;
-
-      apiData = {
-        id: apiResponse.id,
-        title: apiResponse.name,
-        credits: apiResponse.credits,
-        releaseDate: apiResponse.first_air_date.slice(0, 4),
-        homepage: apiResponse.homepage,
-        runtime: 24,
-        tagline: apiResponse.tagline,
-        imdbLink: `find/?q=${apiResponse.name}`,
-      };
+    if (!apiResponse.original_language) {
+      throw new TRPCError({
+        message: "Could not get title from TMDB API",
+        code: "NOT_FOUND",
+      });
     }
 
-    return {
-      db: dbData,
-      api: apiData,
-    };
+    return generateGetOneResponse(
+      dbData,
+      dbData.mediaType === "movie"
+        ? parseTmdbMovieResponse(apiResponse as tmdbMovieQueryResult)
+        : parseTmdbTVResponse(apiResponse as tmdbTVQueryResult)
+    );
   }),
   markAsWatched: publicProcedure
     .input(
