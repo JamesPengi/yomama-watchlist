@@ -4,11 +4,13 @@ import type { ColumnDef, InitialTableState } from "@tanstack/react-table";
 import { DataTable } from "~/app/_components/ui/data-table";
 import React from "react";
 import { cn } from "~/utils/utils";
-import { CheckCircle, CircleDashed } from "lucide-react";
+import { CheckCircle } from "lucide-react";
 import { Badge } from "./ui/badge";
 import type { serverClient } from "../_trpc/serverClient";
 import { trpc } from "../_trpc/client";
 import type { getAllResponse } from "~/types/ApiResponses";
+import { ToggleWatched } from "./ToggleWatched";
+import { Skeleton } from "./ui/skeleton";
 
 interface TitlesViewProps {
   initialData: Awaited<ReturnType<(typeof serverClient)["titles"]["getAll"]>>;
@@ -67,12 +69,19 @@ const columns: ColumnDef<getAllResponse>[] = [
     },
     header: () => <Header className="text-center">Watched</Header>,
     cell: ({ row }) => {
+      const { data: userData } = trpc.users.getAll.useQuery();
+
       return (
         <div className="flex justify-center">
-          {row.getValue("isWatched") === "false" ? (
-            <CircleDashed className="text-red-500" />
+          {userData ? (
+            <ToggleWatched
+              titleId={row.original.id}
+              titleName={row.original.name}
+              isWatched={row.original.isWatched}
+              userData={userData}
+            />
           ) : (
-            <CheckCircle className="text-green-500" />
+            <Skeleton className="h-8 w-8" />
           )}
         </div>
       );

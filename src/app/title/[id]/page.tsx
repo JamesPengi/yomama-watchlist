@@ -2,7 +2,6 @@
 
 import {
   CheckCircle,
-  CircleDashed,
   CodesandboxIcon,
   ExternalLinkIcon,
   YoutubeIcon,
@@ -36,20 +35,26 @@ import {
   AlertDialogTrigger,
 } from "~/app/_components/ui/alert-dialog";
 
+import { ToggleWatched } from "~/app/_components/ToggleWatched";
+import { Skeleton } from "~/app/_components/ui/skeleton";
+
 export default function TitleView({
   params: { id },
 }: {
   params: { id: string };
 }) {
   const router = useRouter();
+
   const queryContext = trpc.useContext();
   const { data, isLoadingError } = trpc.titles.getOne.useQuery(id);
+  const { data: userData } = trpc.users.getAll.useQuery();
   const deleteTitle = trpc.titles.delete.useMutation({
     onSuccess() {
       queryContext.titles.getAll.invalidate();
       router.back();
     },
   });
+
   if (!data) {
     return <div>Loading... (insert skeleton here)</div>;
   }
@@ -73,16 +78,16 @@ export default function TitleView({
           </CardDescription>
         </div>
         <div className="flex flex-col items-center space-y-2">
-          {data.isWatched ? (
-            <>
-              <CheckCircle className="text-green-500" />
-              <span>Watched</span>
-            </>
+          {userData ? (
+            <ToggleWatched
+              titleId={data.id}
+              titleName={data.title}
+              isWatched={data.isWatched}
+              userData={userData}
+              showDescription
+            />
           ) : (
-            <>
-              <CircleDashed className="text-red-500" />
-              <span>Not Watched</span>
-            </>
+            <Skeleton className="h-8 w-8" />
           )}
         </div>
       </CardHeader>
