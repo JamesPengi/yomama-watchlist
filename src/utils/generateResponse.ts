@@ -17,6 +17,7 @@ export function generateGetOneResponse(
     tagline: parsedApiResponse.tagline,
     imdbLink: parsedApiResponse.imdbLink,
     trailerLink: `https://www.youtube.com/results?search_query=${dbData.name} Official Trailer`,
+    dateAdded: dbData.dateAdded,
     isWatched: dbData.isWatched,
     mediaType: dbData.mediaType,
     userData: dbData.isWatched
@@ -24,6 +25,7 @@ export function generateGetOneResponse(
           watched: dbData.titlesToUsers.map((user) => user.user.name),
           rating: Number(dbData.userRating) ?? 0,
           description: dbData.userDescription ?? "",
+          dateWatched: dbData.dateWatched ?? new Date(),
         }
       : undefined,
   };

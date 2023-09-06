@@ -36,11 +36,13 @@ export type getOneResponse = {
   tagline: string;
   imdbLink: string;
   trailerLink: string;
+  dateAdded: Date;
   isWatched: boolean;
   mediaType: tmdbMediaType;
   userData?: {
     watched: string[];
     rating: number;
     description: string;
+    dateWatched: Date;
   };
 };

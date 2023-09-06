@@ -98,9 +98,9 @@ export default function TitleView({
             )}`}
           />
         </div>
-        <div className="flex flex-col space-y-5">
+        <div className="flex flex-col space-y-7">
           <div className="flex h-1/2 flex-row space-x-2">
-            <div className="flex flex-col space-y-5">
+            <div className="flex flex-col space-y-3">
               {data.tagline && (
                 <>
                   <span className="text-center text-xl font-semibold italic">
@@ -151,6 +151,12 @@ export default function TitleView({
                   </div>
                 </div>
               )}
+              <div>
+                <h5 className="text-muted-foreground underline underline-offset-4">
+                  Added on
+                </h5>
+                <span>{data.dateAdded.toDateString()}</span>
+              </div>
             </div>
             <div className="flex flex-row space-x-5">
               <Separator orientation="vertical" />
@@ -200,6 +206,12 @@ export default function TitleView({
                       return <span key={index}>{user}</span>;
                     })}
                   </div>
+                </div>
+                <div>
+                  <h5 className="text-muted-foreground underline underline-offset-4">
+                    Watched on
+                  </h5>
+                  <span>{data.userData.dateWatched.toString()}</span>
                 </div>
               </div>
             </div>
