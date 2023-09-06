@@ -9,8 +9,7 @@ import {
   type tmdbGeneralQueryResponse,
   type tmdbMovieQueryResult,
   type tmdbTVQueryResult,
-  type getOneApiResponse,
-} from "~/utils/tmdbSchema";
+} from "~/types/tmdbSchema";
 import { TRPCError } from "@trpc/server";
 import { desc, eq, sql, and, inArray } from "drizzle-orm";
 import { parseTmdbResponse } from "~/utils/parseTmdbResponse";

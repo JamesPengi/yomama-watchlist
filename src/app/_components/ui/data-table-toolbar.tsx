@@ -19,7 +19,7 @@ import {
   type tmdbGenreName,
   type tmdbMediaType,
   tmdbMediaTypeEnum,
-} from "~/utils/tmdbSchema";
+} from "~/types/tmdbSchema";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;

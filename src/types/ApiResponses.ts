@@ -1,4 +1,4 @@
-import type { tmdbGenreName } from "~/utils/tmdbSchema";
+import type { tmdbGenreName, tmdbMediaType } from "~/types/tmdbSchema";
 
 export type getAllResponse = {
   id: number;

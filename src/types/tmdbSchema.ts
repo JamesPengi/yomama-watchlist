@@ -85,16 +85,20 @@ export type tmdbCredits = {
     profile_path: string;
     department: string;
     job: string;
-  };
+  }[];
 };
 
 export type getOneApiResponse = {
   id: number;
   title: string;
-  credits: tmdbCredits;
+  credits: {
+    actors: { name: string; profile_path: string; character: string }[];
+    directors: string[];
+    writers: string[];
+  };
   releaseDate: string;
   homepage: string;
-  runtime: number;
+  runtime: number | null;
   tagline: string;
   imdbLink: string;
 };

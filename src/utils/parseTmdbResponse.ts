@@ -3,7 +3,10 @@ import {
   getReadableGenreName,
   type tmdbGenreName,
   type tmdbGeneralQueryResult,
-} from "./tmdbSchema";
+  type tmdbTVQueryResult,
+  type getOneApiResponse,
+  type tmdbMovieQueryResult,
+} from "../types/tmdbSchema";
 
 export function parseTmdbResponse(data: tmdbGeneralQueryResult): Title__Insert {
   let mediaType: "movie" | "tv" | "anime" = "movie";
