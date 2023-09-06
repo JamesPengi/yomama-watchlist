@@ -101,10 +101,14 @@ export default function TitleView({
         <div className="flex flex-col space-y-5">
           <div className="flex h-1/2 flex-row space-x-2">
             <div className="flex flex-col space-y-5">
-              <span className="text-center text-xl font-semibold italic">
-                {data.tagline}
-              </span>
-              <Separator />
+              {data.tagline && (
+                <>
+                  <span className="text-center text-xl font-semibold italic">
+                    {data.tagline}
+                  </span>
+                  <Separator />
+                </>
+              )}
               <div>
                 <h5 className="text-muted-foreground underline underline-offset-4">
                   Overview
