@@ -23,13 +23,33 @@ import LinkWithIcon from "~/app/_components/ui/link-with-icon";
 import { Separator } from "~/app/_components/ui/separator";
 import { trpc } from "~/app/_trpc/client";
 import { toBase64, shimmer } from "~/utils/ImageShimmer";
+import { useRouter } from "next/navigation";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "~/app/_components/ui/alert-dialog";
 
 export default function TitleView({
   params: { id },
 }: {
   params: { id: string };
 }) {
+  const router = useRouter();
+  const queryContext = trpc.useContext();
   const { data, isLoadingError } = trpc.titles.getOne.useQuery(id);
+  const deleteTitle = trpc.titles.delete.useMutation({
+    onSuccess() {
+      queryContext.titles.getAll.invalidate();
+      router.back();
+    },
+  });
   if (!data) {
     return <div>Loading... (insert skeleton here)</div>;
   }
@@ -193,7 +213,28 @@ export default function TitleView({
             width={75}
           />
         </div>
-        <Button variant="destructive">Delete</Button>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button variant="destructive">Delete</Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This will delete {data.title} from the watchlist
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={() => deleteTitle.mutate(Number(data.id))}
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              >
+                Delete
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </CardFooter>
     </Card>
   );

@@ -16,15 +16,12 @@ export const metadata: Metadata = {
 export default function RootLayout(props: { children: React.ReactNode }) {
   return (
     <html>
-      <body
-        className={twMerge(
-          "container mt-10 flex flex-col font-sans",
-          fontSans.variable
-        )}
-      >
+      <body className={twMerge("font-sans", fontSans.variable)}>
         <Provider>
-          <QuickAdd />
-          <div className="mt-10">{props.children}</div>
+          <div className="container">
+            <QuickAdd />
+            <div>{props.children}</div>
+          </div>
         </Provider>
       </body>
     </html>
