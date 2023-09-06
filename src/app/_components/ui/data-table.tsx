@@ -1,4 +1,3 @@
-"use client";
 import { DataTablePagination } from "./data-table-pagination";
 import { DataTableToolbar } from "./data-table-toolbar";
 import {
@@ -22,8 +21,6 @@ import {
   type Row,
 } from "@tanstack/react-table";
 
-import autoAnimate from "@formkit/auto-animate";
-import { useEffect, useRef } from "react";
 import Link from "next/link";
 import type { getAllResponse } from "~/types/ApiResponses";
 
@@ -49,11 +46,6 @@ export function DataTable<TValue>({
     getFacetedUniqueValues: getFacetedUniqueValues(),
   });
 
-  const parent = useRef(null);
-  useEffect(() => {
-    parent.current && autoAnimate(parent.current);
-  }, [parent]);
-
   return (
     <div className="space-y-4">
       <DataTableToolbar table={table} />
@@ -77,7 +69,7 @@ export function DataTable<TValue>({
               );
             })}
           </TableHeader>
-          <TableBody ref={parent}>
+          <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row: Row<getAllResponse>) => {
                 return (
