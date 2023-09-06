@@ -58,15 +58,14 @@ export type tmdbTVQueryResult = {
   genres: { id: number; name: string }[];
   homepage: string;
   id: number;
+  name: string;
   original_language: string;
   original_title: string;
   overview: string;
   popularity: string;
   poster_path: string;
-  release_date: string;
   episode_runtime: number[];
   tagline: string;
-  title: string;
   vote_average: number;
   vote_count: number;
 };

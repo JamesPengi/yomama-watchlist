@@ -99,20 +99,23 @@ export const titlesRouter = router({
 
     if (dbData.mediaType === "movie") {
       const apiResponse = (await (
-        await fetch(`${TMDB_MOVIE_BASE_URL}/${dbData.tmdbId}`, {
-          method: "GET",
-          headers: {
-            accept: "application/json",
-            Authorization: `Bearer ${env.TMDB_AUTH_TOKEN}`,
-          },
-        })
+        await fetch(
+          `${TMDB_MOVIE_BASE_URL}/${dbData.tmdbId}?append_to_response=credits`,
+          {
+            method: "GET",
+            headers: {
+              accept: "application/json",
+              Authorization: `Bearer ${env.TMDB_AUTH_TOKEN}`,
+            },
+          }
+        )
       ).json()) as tmdbMovieQueryResult;
 
       apiData = {
         id: apiResponse.id,
         title: apiResponse.title,
         credits: apiResponse.credits,
-        releaseDate: apiResponse.release_date,
+        releaseDate: apiResponse.release_date.slice(0, 4),
         homepage: apiResponse.release_date,
         runtime: apiResponse.runtime,
         tagline: apiResponse.tagline,
@@ -120,24 +123,27 @@ export const titlesRouter = router({
       };
     } else {
       const apiResponse = (await (
-        await fetch(`${TMDB_TV_BASE_URL}/${dbData.tmdbId}`, {
-          method: "GET",
-          headers: {
-            accept: "application/json",
-            Authorization: `Bearer ${env.TMDB_AUTH_TOKEN}`,
-          },
-        })
+        await fetch(
+          `${TMDB_TV_BASE_URL}/${dbData.tmdbId}?append_to_response=credits`,
+          {
+            method: "GET",
+            headers: {
+              accept: "application/json",
+              Authorization: `Bearer ${env.TMDB_AUTH_TOKEN}`,
+            },
+          }
+        )
       ).json()) as tmdbTVQueryResult;
 
       apiData = {
         id: apiResponse.id,
-        title: apiResponse.title,
+        title: apiResponse.name,
         credits: apiResponse.credits,
-        releaseDate: apiResponse.release_date,
-        homepage: apiResponse.release_date,
-        runtime: apiResponse.episode_runtime[0]!,
+        releaseDate: apiResponse.first_air_date.slice(0, 4),
+        homepage: apiResponse.homepage,
+        runtime: 24,
         tagline: apiResponse.tagline,
-        imdbLink: `find/?q=${apiResponse.title}`,
+        imdbLink: `find/?q=${apiResponse.name}`,
       };
     }
 
