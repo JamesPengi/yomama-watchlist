@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  CheckCircle,
-  CodesandboxIcon,
-  ExternalLinkIcon,
-  YoutubeIcon,
-} from "lucide-react";
+import { CodesandboxIcon, ExternalLinkIcon, YoutubeIcon } from "lucide-react";
 import tmdbIcon from "~/assets/tmdb_logo.svg";
 import Image from "next/image";
 import { Badge } from "~/app/_components/ui/badge";

@@ -4,7 +4,6 @@ import type { ColumnDef, InitialTableState } from "@tanstack/react-table";
 import { DataTable } from "~/app/_components/ui/data-table";
 import React from "react";
 import { cn } from "~/utils/utils";
-import { CheckCircle } from "lucide-react";
 import { Badge } from "./ui/badge";
 import type { serverClient } from "../_trpc/serverClient";
 import { trpc } from "../_trpc/client";
