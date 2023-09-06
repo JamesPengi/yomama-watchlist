@@ -4,6 +4,7 @@ import Provider from "./_trpc/Provider";
 import { twMerge } from "tailwind-merge";
 import { Rubik } from "next/font/google";
 import "./globals.css";
+import { QuickAdd } from "./_components/QuickAdd";
 
 const fontSans = Rubik({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -12,20 +13,16 @@ export const metadata: Metadata = {
   description: "A watchlist for friends",
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout(props: { children: React.ReactNode }) {
   return (
     <html>
-      <body
-        className={twMerge(
-          "flex min-h-screen flex-col font-sans",
-          fontSans.variable
-        )}
-      >
-        <Provider>{children}</Provider>
+      <body className={twMerge("font-sans", fontSans.variable)}>
+        <Provider>
+          <div className="container">
+            <QuickAdd />
+            <div>{props.children}</div>
+          </div>
+        </Provider>
       </body>
     </html>
   );

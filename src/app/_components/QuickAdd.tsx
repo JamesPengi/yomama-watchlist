@@ -56,7 +56,7 @@ export function QuickAdd() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="w-full flex-1"
+        className="my-10 w-full flex-1"
         autoComplete="off"
       >
         <FormField

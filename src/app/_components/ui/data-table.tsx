@@ -18,18 +18,23 @@ import {
   getFacetedRowModel,
   getFacetedUniqueValues,
   type InitialTableState,
+  type Row,
 } from "@tanstack/react-table";
-interface DataTableProps<TData, TValue> {
-  data: TData[];
-  columns: ColumnDef<TData, TValue>[];
+
+import Link from "next/link";
+import type { getAllResponse } from "~/types/ApiResponses";
+
+interface DataTableProps<TValue> {
+  data: getAllResponse[];
+  columns: ColumnDef<getAllResponse, TValue>[];
   initialState: InitialTableState;
 }
 
-export function DataTable<TData, TValue>({
+export function DataTable<TValue>({
   data,
   columns,
   initialState,
-}: DataTableProps<TData, TValue>) {
+}: DataTableProps<TValue>) {
   const table = useReactTable({
     data,
     columns,
@@ -66,15 +71,24 @@ export function DataTable<TData, TValue>({
           </TableHeader>
           <TableBody>
             {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => {
+              table.getRowModel().rows.map((row: Row<getAllResponse>) => {
                 return (
-                  <TableRow key={row.id}>
+                  <TableRow className="hover:cursor-pointer" key={row.id}>
                     {row.getVisibleCells().map((cell) => {
                       return (
                         <TableCell key={cell.id}>
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
+                          {cell.column.id !== "isWatched" ? (
+                            <Link href={`/title/${row.original.id}`}>
+                              {flexRender(
+                                cell.column.columnDef.cell,
+                                cell.getContext()
+                              )}
+                            </Link>
+                          ) : (
+                            flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext()
+                            )
                           )}
                         </TableCell>
                       );

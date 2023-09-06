@@ -1,46 +1,39 @@
 "use client";
 
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuItem,
-} from "./dropdown-menu";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "./dialog";
-import type { Row } from "@tanstack/react-table";
-import { MoreHorizontal } from "lucide-react";
-import { Button } from "./button";
-import type { Title, User } from "~/db/drizzle";
-import { useState } from "react";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "./form";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Input } from "./input";
-import { Checkbox } from "./checkbox";
-import { trpc } from "~/app/_trpc/client";
+import { trpc } from "../_trpc/client";
+import { useState } from "react";
+import { Checkbox } from "~/app/_components/ui/checkbox";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogDescription,
+  DialogTrigger,
+} from "~/app/_components/ui/dialog";
+import { Input } from "~/app/_components/ui/input";
+import { Button } from "~/app/_components/ui/button";
+import { DialogHeader, DialogFooter } from "~/app/_components/ui/dialog";
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormDescription,
+  FormControl,
+  FormMessage,
+} from "~/app/_components/ui/form";
+import { CheckCircle, CircleDashed } from "lucide-react";
+import type { User } from "~/db/drizzle";
 
-interface DataTableRowActionsProps<TData> {
-  row: Row<TData>;
+interface MarkAsWatchedProps {
+  titleId: number;
+  titleName: string;
+  isWatched: boolean;
   userData: User[];
+  showDescription?: boolean;
 }
 
 const formSchema = z.object({
@@ -55,42 +48,40 @@ const formSchema = z.object({
   }),
 });
 
-export function DataTableRowActions<TData>({
-  row,
+export function ToggleWatched({
+  titleId,
+  titleName,
   userData,
-}: DataTableRowActionsProps<TData>) {
-  const title = row.original as Title;
-
+  isWatched,
+  showDescription = false,
+}: MarkAsWatchedProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: { users: ["Jassem"], ratings: "", description: "" },
   });
-
   const onSubmit = (data: z.infer<typeof formSchema>) => {
-    const usersWatched = userData.filter((user) => {
-      for (const userData of data.users) {
-        if (userData === user.name) {
-          return true;
+    if (userData) {
+      const usersWatched = userData.filter((user) => {
+        for (const userData of data.users) {
+          if (userData === user.name) {
+            return true;
+          }
         }
-      }
-    });
-
-    if (!Number.isNaN(data.ratings)) {
-      markAsWatched.mutate({
-        titleId: title.id,
-        userDescription: data.description,
-        userRating: data.ratings,
-        usersWatched: usersWatched,
       });
+
+      if (!Number.isNaN(data.ratings)) {
+        markAsWatched.mutate({
+          titleId: titleId,
+          userDescription: data.description,
+          userRating: data.ratings,
+          usersWatched: usersWatched,
+        });
+      }
     }
   };
 
   const queryContext = trpc.useContext();
-  const markAsNotWatched = trpc.titles.markAsNotWatched.useMutation({
-    onSettled() {
-      queryContext.invalidate();
-    },
-  });
+
   const markAsWatched = trpc.titles.markAsWatched.useMutation({
     onSettled() {
       queryContext.titles.invalidate();
@@ -98,9 +89,10 @@ export function DataTableRowActions<TData>({
       setDialogOpen(false);
     },
   });
-  const deleteTitle = trpc.titles.delete.useMutation({
-    onSettled() {
-      queryContext.titles.invalidate();
+  const markAsNotWatchedMutation = trpc.titles.markAsNotWatched.useMutation({
+    onSuccess() {
+      queryContext.titles.getOne.invalidate(String(titleId));
+      queryContext.titles.getAll.invalidate();
     },
   });
 
@@ -108,47 +100,34 @@ export function DataTableRowActions<TData>({
 
   return (
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
+      {isWatched ? (
+        <Button
+          variant="ghost"
+          className="flex h-8 w-8 rounded-full p-0 data-[state=open]:bg-muted"
+          onClick={() => markAsNotWatchedMutation.mutate({ id: titleId })}
+        >
+          <CheckCircle className="text-green-500" />
+        </Button>
+      ) : (
+        <DialogTrigger asChild>
           <Button
             variant="ghost"
-            className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
+            className="flex h-8 w-8 rounded-full p-0 data-[state=open]:bg-muted"
           >
-            <MoreHorizontal className="h-4 w-4" />
+            <CircleDashed className="text-red-500" />
           </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-[160px]">
-          <DropdownMenuLabel className="text-center">Options</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          {title.isWatched ? (
-            <DropdownMenuItem
-              onClick={() =>
-                markAsNotWatched.mutate({
-                  id: title.id,
-                })
-              }
-            >
-              Mark as not watched
-            </DropdownMenuItem>
-          ) : (
-            <DialogTrigger asChild>
-              <DropdownMenuItem>Mark as Watched</DropdownMenuItem>
-            </DialogTrigger>
-          )}
-
-          <DropdownMenuItem
-            className="text-red-500 focus:bg-red-500 focus:text-white"
-            onClick={() => deleteTitle.mutate(title.id)}
-          >
-            Delete title
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+        </DialogTrigger>
+      )}
+      {showDescription && (
+        <span className="text-[12px] text-muted-foreground">
+          {!isWatched && `Not `}Watched
+        </span>
+      )}
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{title.name}</DialogTitle>
+          <DialogTitle>{titleName}</DialogTitle>
           <DialogDescription>
-            Enter who watched {title.name} your rating, and phrase to describe
+            Enter who watched {titleName} your rating, and phrase to describe
             it.
           </DialogDescription>
         </DialogHeader>
@@ -173,7 +152,7 @@ export function DataTableRowActions<TData>({
                           Select the people who watched this
                         </FormDescription>
                         <div className="mt-3 space-y-2">
-                          {userData.map((user) => {
+                          {userData?.map((user) => {
                             return (
                               <FormField
                                 key={user.id}

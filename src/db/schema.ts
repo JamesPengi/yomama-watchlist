@@ -11,7 +11,7 @@ import {
   integer,
   primaryKey,
 } from "drizzle-orm/pg-core";
-import { tmdbGenreNameEnum, tmdbMediaTypeEnum } from "~/utils/tmdbSchema";
+import { tmdbGenreNameEnum, tmdbMediaTypeEnum } from "~/types/tmdbSchema";
 
 export const genreEnum = pgEnum("genre", tmdbGenreNameEnum.options);
 
