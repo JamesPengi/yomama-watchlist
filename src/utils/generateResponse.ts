@@ -8,8 +8,8 @@ export function generateGetOneResponse(
   return {
     id: dbData.id,
     title: dbData.name,
-    overview: dbData.tmdbOverview,
-    posterPath: dbData.tmdbPosterPath,
+    overview: parsedApiResponse.overview,
+    posterPath: parsedApiResponse.poster_path,
     credits: parsedApiResponse.credits,
     releaseDate: parsedApiResponse.releaseDate.slice(0, 4),
     homepage: parsedApiResponse.homepage,

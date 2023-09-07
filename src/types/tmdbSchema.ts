@@ -91,6 +91,8 @@ export type tmdbCredits = {
 export type getOneApiResponse = {
   id: number;
   title: string;
+  overview: string;
+  poster_path: string;
   credits: {
     actors: { name: string; profile_path: string; character: string }[];
     directors: string[];
