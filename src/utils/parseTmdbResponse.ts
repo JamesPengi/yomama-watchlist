@@ -34,8 +34,6 @@ export function parseTmdbGeneralResponse(
     name,
     mediaType,
     tmdbId: String(data.id),
-    tmdbPosterPath: data.poster_path,
-    tmdbOverview: data.overview,
     genre,
   };
 }
@@ -54,6 +52,8 @@ export function parseTmdbTVResponse(
   return {
     id: data.id,
     title: data.name,
+    poster_path: data.poster_path,
+    overview: data.overview,
     releaseDate: data.first_air_date.slice(0, 4),
     homepage: data.homepage,
     runtime: null,
@@ -81,6 +81,8 @@ export function parseTmdbMovieResponse(
   return {
     id: data.id,
     title: data.title,
+    poster_path: data.poster_path,
+    overview: data.overview,
     releaseDate: data.release_date,
     homepage: data.homepage,
     runtime: data.runtime,
