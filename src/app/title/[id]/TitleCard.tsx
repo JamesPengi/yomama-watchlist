@@ -96,7 +96,7 @@ export default function TitleView({ titleId, initialData }: TitleViewProps) {
             height={750}
             alt={`Movie poster of ${data.title}`}
             placeholder={`data:image/svg+xml;base64,${toBase64(
-              shimmer(200, 300)
+              shimmer(500, 750)
             )}`}
           />
         </div>
