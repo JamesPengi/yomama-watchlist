@@ -25,7 +25,10 @@ export default function Provider({ children }: { children: React.ReactNode }) {
       links: [
         loggerLink({
           enabled: () =>
-            process.env.NODE_ENV === "development" ? true : false,
+            process.env.NODE_ENV === "development" ||
+            process.env.VERCEL_ENV === "preview"
+              ? true
+              : false,
         }),
         httpBatchLink({
           url: `${getBaseUrl()}/api/trpc`,
