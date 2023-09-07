@@ -73,9 +73,7 @@ export default function TitleView({ titleId, initialData }: TitleViewProps) {
               ({data.releaseDate})
             </span>
           </CardTitle>
-          <CardDescription>
-            <Badge variant={data.mediaType}>{data.mediaType}</Badge>
-          </CardDescription>
+          <Badge variant={data.mediaType}>{data.mediaType}</Badge>
         </div>
         <div className="flex flex-col items-center space-y-2">
           {userData ? (
