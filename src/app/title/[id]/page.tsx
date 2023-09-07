@@ -32,6 +32,7 @@ import {
 
 import { ToggleWatched } from "~/app/_components/ToggleWatched";
 import { Skeleton } from "~/app/_components/ui/skeleton";
+import { TitleLoadingSkeleton } from "./LoadingSkeleton";
 
 export default function TitleView({
   params: { id },
@@ -51,7 +52,7 @@ export default function TitleView({
   });
 
   if (!data) {
-    return <div>Loading... (insert skeleton here)</div>;
+    return <TitleLoadingSkeleton />;
   }
 
   if (isLoadingError) {
