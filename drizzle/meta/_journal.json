@@ -71,6 +71,13 @@
       "when": 1692964924361,
       "tag": "0009_whole_power_pack",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "5",
+      "when": 1694074295891,
+      "tag": "0010_elite_goliath",
+      "breakpoints": true
     }
   ]
 }

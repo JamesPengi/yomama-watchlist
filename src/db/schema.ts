@@ -20,8 +20,6 @@ export const mediaTypeEnum = pgEnum("mediaType", tmdbMediaTypeEnum.options);
 export const titles = pgTable("titles", {
   id: serial("id").primaryKey(),
   tmdbId: varchar("tmdbId", { length: 20 }).notNull(),
-  tmdbPosterPath: varchar("tmdbPosterPath", { length: 60 }).notNull(),
-  tmdbOverview: text("tmdbOverview").notNull(),
   name: varchar("name", { length: 256 }).notNull(),
   genre: genreEnum("genre").notNull(),
   mediaType: mediaTypeEnum("mediaType").notNull(),
