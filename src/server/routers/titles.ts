@@ -139,41 +139,36 @@ export const titlesRouter = router({
     )
     .mutation(async ({ input }) => {
       const titlesToUsersValues: TitleToUser__Insert[] = [];
-
       input.usersWatched.forEach((value) => {
         titlesToUsersValues.push({ titleId: input.titleId, userId: value.id });
       });
 
-      await db.transaction(async (tx) => {
-        await tx
-          .update(titles)
-          .set({
-            isWatched: true,
-            dateWatched: sql`now()`,
-            userRating: input.userRating,
-            userDescription: input.userDescription,
-          })
-          .where(eq(titles.id, input.titleId));
-        await tx.insert(titlesToUsers).values(titlesToUsersValues);
-      });
+      await db
+        .update(titles)
+        .set({
+          isWatched: true,
+          dateWatched: sql`now()`,
+          userRating: input.userRating,
+          userDescription: input.userDescription,
+        })
+        .where(eq(titles.id, input.titleId));
+
+      await db.insert(titlesToUsers).values(titlesToUsersValues);
     }),
   markAsNotWatched: publicProcedure
     .input(z.object({ id: z.number().min(0) }))
     .mutation(async ({ input }) => {
-      await db.transaction(async (tx) => {
-        await tx
-          .update(titles)
-          .set({
-            isWatched: false,
-            dateWatched: null,
-            userDescription: null,
-            userRating: null,
-          })
-          .where(eq(titles.id, input.id));
-        await tx
-          .delete(titlesToUsers)
-          .where(eq(titlesToUsers.titleId, input.id));
-      });
+      await db
+        .update(titles)
+        .set({
+          isWatched: false,
+          dateWatched: null,
+          userDescription: null,
+          userRating: null,
+        })
+        .where(eq(titles.id, input.id));
+
+      await db.delete(titlesToUsers).where(eq(titlesToUsers.titleId, input.id));
     }),
   getRandom: publicProcedure
     .input(
@@ -199,9 +194,7 @@ export const titlesRouter = router({
   delete: publicProcedure
     .input(z.number().min(0))
     .mutation(async ({ input }) => {
-      await db.transaction(async (tx) => {
-        await tx.delete(titlesToUsers).where(eq(titlesToUsers.titleId, input));
-        await tx.delete(titles).where(eq(titles.id, input));
-      });
+      await db.delete(titlesToUsers).where(eq(titlesToUsers.titleId, input));
+      await db.delete(titles).where(eq(titles.id, input));
     }),
 });
