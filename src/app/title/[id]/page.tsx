@@ -8,7 +8,6 @@ import { Button } from "~/app/_components/ui/button";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -69,9 +68,7 @@ export default function TitleView({
               ({data.releaseDate})
             </span>
           </CardTitle>
-          <CardDescription>
-            <Badge variant={data.mediaType}>{data.mediaType}</Badge>
-          </CardDescription>
+          <Badge variant={data.mediaType}>{data.mediaType}</Badge>
         </div>
         <div className="flex flex-col items-center space-y-2">
           {userData ? (

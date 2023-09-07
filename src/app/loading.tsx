@@ -13,7 +13,7 @@ export default function Loading() {
     const elements = [];
     for (let i = 0; i < 10; i++) {
       elements.push(
-        <TableRow>
+        <TableRow key={i}>
           <TableCell>
             <div className="w-[60px]">
               <Skeleton className="h-8 w-full rounded" />
