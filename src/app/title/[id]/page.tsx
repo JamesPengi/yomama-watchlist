@@ -33,6 +33,8 @@ import { ToggleWatched } from "~/app/_components/ToggleWatched";
 import { Skeleton } from "~/app/_components/ui/skeleton";
 import { TitleLoadingSkeleton } from "./LoadingSkeleton";
 
+export const runtime = "edge";
+
 export default function TitleView({
   params: { id },
 }: {
