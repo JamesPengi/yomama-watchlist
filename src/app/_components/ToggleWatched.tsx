@@ -27,6 +27,17 @@ import {
 } from "~/app/_components/ui/form";
 import { CheckCircle, CircleDashed } from "lucide-react";
 import type { User } from "~/db/drizzle";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "./ui/alert-dialog";
 
 interface MarkAsWatchedProps {
   titleId: number;
@@ -101,13 +112,34 @@ export function ToggleWatched({
   return (
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       {isWatched ? (
-        <Button
-          variant="ghost"
-          className="flex h-8 w-8 rounded-full p-0 data-[state=open]:bg-muted"
-          onClick={() => markAsNotWatchedMutation.mutate({ id: titleId })}
-        >
-          <CheckCircle className="text-green-500" />
-        </Button>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button
+              variant="ghost"
+              className="flex h-8 w-8 rounded-full p-0 data-[state=open]:bg-muted"
+            >
+              <CheckCircle className="text-green-500" />
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This will mark {titleName} as not watched and erase all the user
+                data from it
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={() => markAsNotWatchedMutation.mutate({ id: titleId })}
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              >
+                Mark as not watched
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       ) : (
         <DialogTrigger asChild>
           <Button
