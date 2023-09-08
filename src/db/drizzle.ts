@@ -1,12 +1,10 @@
-import { drizzle } from "drizzle-orm/postgres-js";
-import postgres from "postgres";
-// import { neon } from "@neondatabase/serverless";
+import { drizzle } from "drizzle-orm/neon-serverless";
+import { Pool } from "@neondatabase/serverless";
 import * as schema from "./schema";
 import { env } from "~/env.mjs";
 import type { InferInsertModel, InferSelectModel } from "drizzle-orm";
 
-const queryClient = postgres(env.DATABASE_URL);
-// const queryClient = neon(env.DATABASE_URL);
+const queryClient = new Pool({ connectionString: env.DATABASE_URL });
 export const db = drizzle(queryClient, { schema });
 
 export type Title = InferSelectModel<typeof schema.titles>;
