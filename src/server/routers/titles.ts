@@ -44,14 +44,24 @@ export const titlesRouter = router({
 
       if (!data) {
         throw new TRPCError({
-          message: "TMDB API Invalid Response",
+          message: `Could not find '${input}' on TMDB...`,
           code: "PARSE_ERROR",
         });
       }
 
       const parsedData: Title__Insert = parseTmdbGeneralResponse(data);
+      const returningData = await db
+        .insert(titles)
+        .values(parsedData)
+        .returning({ titleName: titles.name, titleId: titles.id });
 
-      await db.insert(titles).values(parsedData);
+      if (!returningData[0]) {
+        throw new TRPCError({
+          message: `Could not parse data in the database...`,
+          code: "PARSE_ERROR",
+        });
+      }
+      return returningData[0];
     }),
   getAll: publicProcedure.query(async () => {
     return await db.query.titles.findMany({

@@ -15,6 +15,9 @@ import {
 } from "./ui/form";
 import { useEffect } from "react";
 import { trpc } from "../_trpc/client";
+import { useToast } from "./ui/use-toast";
+import { ToastAction } from "./ui/toast";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -23,6 +26,9 @@ const formSchema = z.object({
 });
 
 export function QuickAdd() {
+  const { toast } = useToast();
+  const router = useRouter();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: { name: "" },
@@ -42,9 +48,36 @@ export function QuickAdd() {
 
   const queryContext = trpc.useContext();
   const quickAdd = trpc.titles.quickAdd.useMutation({
-    async onSuccess() {
-      await queryContext.titles.invalidate();
+    onMutate(data) {
+      toast({
+        title: `Searching for the title '${data}'`,
+        description: `Looking it up on TMDB...`,
+      });
+    },
+    onSuccess(data) {
+      toast({
+        title: `Successfully added ${data.titleName}`,
+        description: `You can now do to the title's page by clicking on this button`,
+        action: (
+          <ToastAction
+            altText="Go to page"
+            onClick={() => {
+              router.push(`/title/${data.titleId}`);
+            }}
+          >
+            Go to title
+          </ToastAction>
+        ),
+      });
+      queryContext.titles.invalidate();
       form.reset();
+    },
+    onError(error) {
+      toast({
+        title: `Error`,
+        description: error.message,
+        variant: "destructive",
+      });
     },
   });
 
@@ -82,7 +115,6 @@ export function QuickAdd() {
         <FormDescription className="pt-2 text-xs text-muted-foreground">
           Press <kbd>ENTER</kbd> to add to the watchlist
         </FormDescription>
-        {/* TODO: Add form error state */}
       </form>
     </Form>
   );
