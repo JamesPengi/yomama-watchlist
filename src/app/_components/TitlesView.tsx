@@ -12,7 +12,12 @@ import { ToggleWatched } from "./ToggleWatched";
 import { Skeleton } from "./ui/skeleton";
 
 interface TitlesViewProps {
-  initialData: Awaited<ReturnType<(typeof serverClient)["titles"]["getAll"]>>;
+  initialTitleData: Awaited<
+    ReturnType<(typeof serverClient)["titles"]["getAll"]>
+  >;
+  initialUserData: Awaited<
+    ReturnType<(typeof serverClient)["users"]["getAll"]>
+  >;
 }
 
 const Header = React.forwardRef<
@@ -144,9 +149,16 @@ const initialTableState: InitialTableState = {
   },
 };
 
-export function TitlesView({ initialData }: TitlesViewProps) {
+export function TitlesView({
+  initialTitleData,
+  initialUserData,
+}: TitlesViewProps) {
   const { data } = trpc.titles.getAll.useQuery(undefined, {
-    initialData: initialData,
+    initialData: initialTitleData,
+  });
+
+  trpc.users.getAll.useQuery(undefined, {
+    initialData: initialUserData,
   });
 
   return (
