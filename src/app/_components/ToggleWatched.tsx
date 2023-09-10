@@ -38,6 +38,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "./ui/alert-dialog";
+import { useToast } from "./ui/use-toast";
 
 interface MarkAsWatchedProps {
   titleId: number;
@@ -91,19 +92,48 @@ export function ToggleWatched({
     }
   };
 
-  const queryContext = trpc.useContext();
+  const { toast } = useToast();
 
+  const queryContext = trpc.useContext();
   const markAsWatched = trpc.titles.markAsWatched.useMutation({
-    onSettled() {
+    onMutate() {
+      toast({
+        description: `Marking '${titleName}' as watched...`,
+      });
+    },
+    onSuccess() {
       queryContext.titles.invalidate();
-      form.reset();
       setDialogOpen(false);
+      form.reset();
+      toast({
+        description: `Marked '${titleName}' as watched!`,
+      });
+    },
+    onError(error) {
+      toast({
+        title: `Error`,
+        description: error.message,
+        variant: "destructive",
+      });
     },
   });
   const markAsNotWatchedMutation = trpc.titles.markAsNotWatched.useMutation({
+    onMutate() {
+      toast({
+        description: `Marking ${titleName} as not watched...`,
+      });
+    },
     onSuccess() {
       queryContext.titles.getOne.invalidate(String(titleId));
       queryContext.titles.getAll.invalidate();
+      toast({ description: `Marked ${titleName} as not watched!` });
+    },
+    onError(error) {
+      toast({
+        title: `Error`,
+        description: error.message,
+        variant: "destructive",
+      });
     },
   });
 
