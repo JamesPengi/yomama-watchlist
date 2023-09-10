@@ -10,3 +10,5 @@ export default async function TitleView({
 
   return <TitleCard titleId={id} initialData={title} />;
 }
+
+export const runtime = "edge";
