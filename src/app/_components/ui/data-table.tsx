@@ -1,3 +1,4 @@
+import { usePaginationStore } from "~/utils/store";
 import { DataTablePagination } from "./data-table-pagination";
 import { DataTableToolbar } from "./data-table-toolbar";
 import {
@@ -35,10 +36,19 @@ export function DataTable<TValue>({
   columns,
   initialState,
 }: DataTableProps<TValue>) {
+  const pageIndex = usePaginationStore((state) => state.pageIndex);
+  const pageSize = usePaginationStore((state) => state.pageSize);
+
   const table = useReactTable({
     data,
     columns,
-    initialState,
+    initialState: {
+      ...initialState,
+      pagination: {
+        pageIndex: pageIndex,
+        pageSize: pageSize,
+      },
+    },
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getFilteredRowModel: getFilteredRowModel(),

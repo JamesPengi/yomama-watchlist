@@ -23,15 +23,16 @@ interface DataTableFacetedFilter<TData, TValue> {
     value: string;
     icon?: React.ComponentType<{ className?: string }>;
   }[];
+  filterState: Set<string>;
 }
 
 export function DataTableFacetedFilter<TData, TValue>({
   column,
   title,
   options,
+  filterState: selectedValues,
 }: DataTableFacetedFilter<TData, TValue>) {
   const facets = column?.getFacetedUniqueValues();
-  const selectedValues = new Set(column?.getFilterValue() as string[]);
 
   return (
     <Popover>
@@ -131,7 +132,10 @@ export function DataTableFacetedFilter<TData, TValue>({
                 <CommandSeparator />
                 <CommandGroup>
                   <CommandItem
-                    onSelect={() => column?.setFilterValue(undefined)}
+                    onSelect={() => {
+                      column?.setFilterValue(undefined);
+                      selectedValues.clear();
+                    }}
                     className="justify-center text-center"
                   >
                     Clear Filters

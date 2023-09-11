@@ -21,6 +21,7 @@ import {
   tmdbMediaTypeEnum,
 } from "~/types/tmdbSchema";
 import { useEffect, useRef } from "react";
+import { useFilterStore } from "~/utils/store";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
@@ -84,6 +85,50 @@ export function DataTableToolbar<TData>({
     return () => document.removeEventListener("keydown", down);
   }, [filterRef]);
 
+  const filterStore = useFilterStore();
+  useEffect(() => {
+    table
+      .getColumn("isWatched")
+      ?.setFilterValue(
+        filterStore.isWatched.size
+          ? Array.from(filterStore.isWatched)
+          : undefined
+      );
+    table
+      .getColumn("mediaType")
+      ?.setFilterValue(
+        filterStore.mediaType.size
+          ? Array.from(filterStore.mediaType)
+          : undefined
+      );
+    table
+      .getColumn("genre")
+      ?.setFilterValue(
+        filterStore.genre.size ? Array.from(filterStore.genre) : undefined
+      );
+    table
+      .getColumn("watchedBy")
+      ?.setFilterValue(
+        filterStore.watchedBy.size
+          ? Array.from(filterStore.watchedBy)
+          : undefined
+      );
+    table
+      .getColumn("notWatchedBy")
+      ?.setFilterValue(
+        filterStore.notWatchedBy.size
+          ? Array.from(filterStore.notWatchedBy)
+          : undefined
+      );
+  }, [
+    filterStore.isWatched,
+    filterStore.mediaType,
+    filterStore.genre,
+    filterStore.watchedBy,
+    filterStore.notWatchedBy,
+    table,
+  ]);
+
   return (
     <div className="flex items-center justify-between">
       <div className="flex flex-1 items-center space-x-2">
@@ -105,6 +150,7 @@ export function DataTableToolbar<TData>({
               { label: "Watched", value: "true", icon: CheckCircleIcon },
               { label: "Not Watched", value: "false", icon: CircleDashedIcon },
             ]}
+            filterState={filterStore.isWatched}
           />
         )}
 
@@ -117,6 +163,7 @@ export function DataTableToolbar<TData>({
               { label: "TV", value: "tv", icon: TvIcon },
               { label: "Anime", value: "anime", icon: BrushIcon },
             ]}
+            filterState={filterStore.mediaType}
           />
         )}
 
@@ -130,6 +177,7 @@ export function DataTableToolbar<TData>({
                 value: genre,
               };
             })}
+            filterState={filterStore.genre}
           />
         )}
 
@@ -145,6 +193,7 @@ export function DataTableToolbar<TData>({
                     value: user.name,
                   };
                 })}
+                filterState={filterStore.watchedBy}
               />
             )}
           </>
@@ -162,6 +211,7 @@ export function DataTableToolbar<TData>({
                     value: user.name,
                   };
                 })}
+                filterState={filterStore.notWatchedBy}
               />
             )}
           </>
@@ -170,7 +220,10 @@ export function DataTableToolbar<TData>({
         {isFiltered && (
           <Button
             variant="ghost"
-            onClick={() => table.resetColumnFilters()}
+            onClick={() => {
+              table.resetColumnFilters();
+              filterStore.clearFilters();
+            }}
             className="h-8 px-2 lg:px-3"
           >
             Reset <XCircleIcon className="ml-2 h-4 w-4" />
