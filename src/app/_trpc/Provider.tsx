@@ -24,7 +24,8 @@ export default function Provider({ children }: { children: React.ReactNode }) {
       transformer: SuperJSON,
       links: [
         loggerLink({
-          enabled: () => true,
+          enabled: () =>
+            process.env.VERCEL_ENV === "production" ? false : true,
         }),
         httpBatchLink({
           url: `${getBaseUrl()}/api/trpc`,

@@ -153,12 +153,12 @@ export function TitlesView({
   initialTitleData,
   initialUserData,
 }: TitlesViewProps) {
-  const { data } = trpc.titles.getAll.useQuery(undefined, {
-    initialData: initialTitleData,
-  });
-
   trpc.users.getAll.useQuery(undefined, {
     initialData: initialUserData,
+  });
+
+  const { data } = trpc.titles.getAll.useQuery(undefined, {
+    initialData: initialTitleData,
   });
 
   return (
