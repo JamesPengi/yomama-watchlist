@@ -13,7 +13,7 @@ import {
   ChevronsLeftIcon,
   ChevronsRight,
 } from "lucide-react";
-import { useTableStore } from "~/utils/store";
+import { usePaginationStore } from "~/utils/store";
 
 interface DataTablePaginationProps<TData> {
   table: Table<TData>;
@@ -22,9 +22,14 @@ interface DataTablePaginationProps<TData> {
 export function DataTablePagination<TData>({
   table,
 }: DataTablePaginationProps<TData>) {
-  const setPageIndex = useTableStore((state) => state.setPageIndex);
-  const increasePageIndex = useTableStore((state) => state.increasePageIndex);
-  const decreasePageIndex = useTableStore((state) => state.decreasePageIndex);
+  const setPageIndex = usePaginationStore((state) => state.setPageIndex);
+  const increasePageIndex = usePaginationStore(
+    (state) => state.increasePageIndex
+  );
+  const decreasePageIndex = usePaginationStore(
+    (state) => state.decreasePageIndex
+  );
+  const setPageSize = usePaginationStore((state) => state.setPageSize);
 
   return (
     <div className="flex items-center justify-between px-2">
@@ -35,6 +40,7 @@ export function DataTablePagination<TData>({
             value={`${table.getState().pagination.pageSize}`}
             onValueChange={(value) => {
               table.setPageSize(Number(value));
+              setPageSize(Number(value));
             }}
           >
             <SelectTrigger className="h-8 w-[70px]">
