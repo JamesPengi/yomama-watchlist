@@ -18,7 +18,10 @@ import {
   parseTmdbTVResponse,
 } from "~/utils/parseTmdbResponse";
 import { db } from "~/db/drizzle";
-import { generateGetOneResponse } from "~/utils/generateResponse";
+import {
+  generateGetOneResponse,
+  generateSearchResponse,
+} from "~/utils/generateResponse";
 
 const TMDB_MULTI_BASE_URL =
   "https://api.themoviedb.org/3/search/multi?include_adult=false&language=en-US&page=1";
@@ -102,9 +105,25 @@ export const titlesRouter = router({
         : parseTmdbTVResponse(apiResponse as tmdbTVQueryResult)
     );
   }),
-  search: publicProcedure.input(z.string()).query(async ({ input }) => {
-    const { results: apiResponse }: tmdbGeneralQueryResponse = (await (
-      await fetch(`${TMDB_MULTI_BASE_URL}&query=${input}`, {
+  searchOthers: publicProcedure.input(z.string()).query(async ({ input }) => {
+    if (isNaN(Number(input))) {
+      throw new TRPCError({ message: "Bad id number", code: "BAD_REQUEST" });
+    }
+
+    const name = await db
+      .select({ titleName: titles.name })
+      .from(titles)
+      .where(eq(titles.id, Number(input)));
+
+    if (!name[0]) {
+      throw new TRPCError({
+        message: "Could not find title in db",
+        code: "NOT_FOUND",
+      });
+    }
+
+    const data: tmdbGeneralQueryResponse = (await (
+      await fetch(`${TMDB_MULTI_BASE_URL}&query=${name[0].titleName}`, {
         method: "GET",
         headers: {
           accept: "application/json",
@@ -113,9 +132,7 @@ export const titlesRouter = router({
       })
     ).json()) as tmdbGeneralQueryResponse;
 
-    return apiResponse
-      .slice(0, 4)
-      .map((result) => parseTmdbGeneralResponse(result));
+    return generateSearchResponse(data);
   }),
   quickAdd: publicProcedure
     .input(z.string().min(2))

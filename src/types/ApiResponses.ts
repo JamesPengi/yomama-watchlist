@@ -44,3 +44,12 @@ export type getOneResponse = {
     dateWatched: Date;
   };
 };
+
+export type searchOptionsResponse = {
+  tmdbId: string;
+  title: string;
+  mediaType: tmdbMediaType;
+  releaseDate: string;
+  genre: string;
+  posterPath: string;
+};
