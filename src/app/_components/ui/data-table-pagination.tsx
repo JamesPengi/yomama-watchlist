@@ -22,14 +22,7 @@ interface DataTablePaginationProps<TData> {
 export function DataTablePagination<TData>({
   table,
 }: DataTablePaginationProps<TData>) {
-  const setPageIndex = usePaginationStore((state) => state.setPageIndex);
-  const increasePageIndex = usePaginationStore(
-    (state) => state.increasePageIndex
-  );
-  const decreasePageIndex = usePaginationStore(
-    (state) => state.decreasePageIndex
-  );
-  const setPageSize = usePaginationStore((state) => state.setPageSize);
+  const paginationStore = usePaginationStore();
 
   return (
     <div className="flex items-center justify-between px-2">
@@ -40,7 +33,7 @@ export function DataTablePagination<TData>({
             value={`${table.getState().pagination.pageSize}`}
             onValueChange={(value) => {
               table.setPageSize(Number(value));
-              setPageSize(Number(value));
+              paginationStore.setPageSize(Number(value));
             }}
           >
             <SelectTrigger className="h-8 w-[70px]">
@@ -68,7 +61,7 @@ export function DataTablePagination<TData>({
           className="hidden h-8 w-8 p-0 lg:flex"
           onClick={() => {
             table.setPageIndex(0);
-            setPageIndex(0);
+            paginationStore.setPageIndex(0);
           }}
           disabled={!table.getCanPreviousPage()}
         >
@@ -80,7 +73,7 @@ export function DataTablePagination<TData>({
           className="h-8 w-8 p-0"
           onClick={() => {
             table.previousPage();
-            decreasePageIndex();
+            paginationStore.setPageIndex(paginationStore.pageIndex - 1);
           }}
           disabled={!table.getCanPreviousPage()}
         >
@@ -92,7 +85,7 @@ export function DataTablePagination<TData>({
           className="h-8 w-8 p-0"
           onClick={() => {
             table.nextPage();
-            increasePageIndex();
+            paginationStore.setPageIndex(paginationStore.pageIndex + 1);
           }}
           disabled={!table.getCanNextPage()}
         >
@@ -104,7 +97,7 @@ export function DataTablePagination<TData>({
           className="hidden h-8 w-8 p-0 lg:flex"
           onClick={() => {
             table.setPageIndex(table.getPageCount() - 1);
-            setPageIndex(table.getPageCount() - 1);
+            paginationStore.setPageIndex(table.getPageCount() - 1);
           }}
           disabled={!table.getCanNextPage()}
         >
