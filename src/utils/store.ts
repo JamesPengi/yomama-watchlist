@@ -17,3 +17,27 @@ export const usePaginationStore = create<PaginationStore>()((set) => ({
   pageSize: 10,
   setPageSize: (pageSize) => set(() => ({ pageSize: pageSize })),
 }));
+
+type FilterStore = {
+  isWatched: Set<string>;
+  mediaType: Set<string>;
+  genre: Set<string>;
+  watchedBy: Set<string>;
+  notWatchedBy: Set<string>;
+  clearFilters: () => void;
+};
+
+export const useFilterStore = create<FilterStore>()((set, get) => ({
+  isWatched: new Set(),
+  mediaType: new Set(),
+  genre: new Set(),
+  watchedBy: new Set(),
+  notWatchedBy: new Set(),
+  clearFilters: () => {
+    get().isWatched.clear();
+    get().mediaType.clear();
+    get().genre.clear();
+    get().watchedBy.clear();
+    get().notWatchedBy.clear();
+  },
+}));
