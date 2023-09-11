@@ -19,7 +19,7 @@ export default function RootLayout(props: { children: React.ReactNode }) {
     <html>
       <body className={twMerge("font-sans", fontSans.variable)}>
         <Provider>
-          <div className="container">
+          <div className="container mb-10">
             <QuickAdd />
             <div>{props.children}</div>
           </div>
