@@ -12,4 +12,3 @@ export default async function TitleView({
 }
 
 export const dynamic = "force-dynamic";
-export const runtime = "edge";
