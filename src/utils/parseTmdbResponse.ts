@@ -13,7 +13,7 @@ export function parseTmdbGeneralResponse(
   data: tmdbGeneralQueryResult
 ): Title__Insert {
   let mediaType: tmdbMediaType = "movie";
-  let name = data.title;
+  let name = data.title!;
 
   if (data.media_type === "tv") {
     mediaType = "tv";
