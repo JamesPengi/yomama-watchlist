@@ -41,8 +41,8 @@ export function SearchSuggestions({
   return (
     data && (
       <div
-        className={`absolute z-20 flex flex-col space-y-5 rounded rounded-t-none bg-gray-900 ${
-          !showSuggestions && `hidden`
+        className={`absolute z-10 flex w-full flex-col space-y-5 rounded rounded-t-none bg-gray-900 p-2 ${
+          !showSuggestions ? `hidden` : `visible`
         }`}
       >
         {data.map((suggestion, index) => {
@@ -50,7 +50,7 @@ export function SearchSuggestions({
             <div
               key={index}
               onClick={() => mutationFn(suggestion.title)}
-              className="flex flex-row space-x-2 border-b p-2 transition-colors hover:cursor-pointer hover:bg-muted/50"
+              className="flex flex-row space-x-2 border-b transition-colors hover:cursor-pointer hover:bg-muted/50"
             >
               <Image
                 src={`https://image.tmdb.org/t/p/w92${suggestion.posterPath}`}
@@ -61,7 +61,7 @@ export function SearchSuggestions({
                   shimmer(92, 138)
                 )}`}
               />
-              <div className="space-y-3">
+              <div className="space-y-3 overflow-hidden">
                 <div>
                   <p className="font-bold">
                     {suggestion.title}{" "}
@@ -74,9 +74,7 @@ export function SearchSuggestions({
                   </Badge>
                 </div>
                 <p className="text-sm font-semibold">{suggestion.genre}</p>
-                <p className="max-w-prose truncate text-sm">
-                  {suggestion.overview}
-                </p>
+                <p className="truncate text-sm">{suggestion.overview}</p>
               </div>
             </div>
           );
