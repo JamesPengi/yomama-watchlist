@@ -79,6 +79,7 @@ export function QuickAdd() {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
+    console.log("submitting");
     quickAdd.mutate(values.name);
   }
 
@@ -104,12 +105,12 @@ export function QuickAdd() {
               </FormControl>
               <div className="hidden space-x-1 rounded-md font-mono text-[10px] text-sm font-medium md:flex ">
                 {searchText.length > 0 ? (
-                  <button
+                  <div
                     onClick={() => form.reset()}
                     className="absolute right-2 top-4"
                   >
                     <XIcon className="h-8 w-8 text-muted-foreground" />
-                  </button>
+                  </div>
                 ) : (
                   <div className="absolute right-2 top-5">
                     <kbd>CTRL</kbd>
