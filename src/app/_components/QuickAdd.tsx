@@ -79,7 +79,6 @@ export function QuickAdd() {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log("submitting");
     quickAdd.mutate(values.name);
   }
 

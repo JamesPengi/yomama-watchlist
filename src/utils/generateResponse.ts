@@ -85,10 +85,8 @@ export function generateSearchResults(tmdbData: tmdbGeneralQueryResult[]) {
         overview: title.overview.slice(0, 300),
         popularity: title.popularity,
       };
-      console.log(data);
       return data;
     })
     .sort((a, b) => b.popularity - a.popularity);
-  console.log(data);
   return data;
 }
