@@ -89,6 +89,9 @@ dependencies:
   next:
     specifier: ^13.4.19
     version: 13.4.19(@babel/core@7.21.4)(react-dom@18.2.0)(react@18.2.0)
+  next-axiom:
+    specifier: ^1.0.0
+    version: 1.0.0(next@13.4.19)(react@18.2.0)
   react:
     specifier: 18.2.0
     version: 18.2.0
@@ -4874,6 +4877,18 @@ packages:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
     dev: true
 
+  /next-axiom@1.0.0(next@13.4.19)(react@18.2.0):
+    resolution: {integrity: sha512-bgXtPWJHLB9Rm64WgWMLQLPtgf+zlnpZmFqkveRyZRN/ZBKhnyptiSbBizxEiZ2TEJj2fcxcqEfzPDJVN2JF9Q==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      next: '>=13.4'
+      react: '>=18.0.0'
+    dependencies:
+      next: 13.4.19(@babel/core@7.21.4)(react-dom@18.2.0)(react@18.2.0)
+      react: 18.2.0
+      whatwg-fetch: 3.6.19
+    dev: false
+
   /next-tick@1.1.0:
     resolution: {integrity: sha512-CXdUiJembsNjuToQvxayPZF9Vqht7hewsvy2sOWafLvi2awflj9mOC6bHIg50orX8IJvWKY9wYQ/zB2kogPslQ==}
     dev: true
@@ -6551,6 +6566,10 @@ packages:
     dependencies:
       defaults: 1.0.4
     dev: true
+
+  /whatwg-fetch@3.6.19:
+    resolution: {integrity: sha512-d67JP4dHSbm2TrpFj8AbO8DnL1JXL5J9u0Kq2xW6d0TFDbCA3Muhdt8orXC22utleTVj7Prqt82baN6RBvnEgw==}
+    dev: false
 
   /which-boxed-primitive@1.0.2:
     resolution: {integrity: sha512-bwZdv0AKLpplFY2KZRX6TvyuN7ojjr7lwkg6ml0roIy9YeuSr7JS372qlNW18UQYzgYK9ziGcerWqZOmEn9VNg==}
