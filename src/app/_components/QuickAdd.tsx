@@ -6,18 +6,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
 import * as z from "zod";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-} from "./ui/form";
+import { Form, FormControl, FormField, FormItem } from "./ui/form";
 import { useEffect } from "react";
 import { trpc } from "../_trpc/client";
 import { useToast } from "./ui/use-toast";
 import { ToastAction } from "./ui/toast";
 import { useRouter } from "next/navigation";
+import { SearchSuggestions } from "./ui/search-suggestions";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -33,6 +28,7 @@ export function QuickAdd() {
     resolver: zodResolver(formSchema),
     defaultValues: { name: "" },
   });
+  const searchText = form.watch("name");
 
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -112,9 +108,10 @@ export function QuickAdd() {
             </FormItem>
           )}
         />
-        <FormDescription className="pt-2 text-xs text-muted-foreground">
-          Press <kbd>ENTER</kbd> to add to the watchlist
-        </FormDescription>
+        <SearchSuggestions
+          searchText={searchText}
+          mutationFn={(name) => quickAdd.mutate(name)}
+        />
       </form>
     </Form>
   );

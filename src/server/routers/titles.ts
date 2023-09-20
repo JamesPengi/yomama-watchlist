@@ -20,7 +20,7 @@ import {
 import { db } from "~/db/drizzle";
 import {
   generateGetOneResponse,
-  generateSearchResponse,
+  generateSearchResults,
 } from "~/utils/generateResponse";
 
 const TMDB_MULTI_BASE_URL =
@@ -105,35 +105,30 @@ export const titlesRouter = router({
         : parseTmdbTVResponse(apiResponse as tmdbTVQueryResult)
     );
   }),
-  searchOthers: publicProcedure.input(z.string()).query(async ({ input }) => {
-    if (isNaN(Number(input))) {
-      throw new TRPCError({ message: "Bad id number", code: "BAD_REQUEST" });
-    }
+  search: publicProcedure
+    .input(z.string().min(2))
+    .mutation(async ({ input }) => {
+      const { results: apiResponse }: tmdbGeneralQueryResponse = (await (
+        await fetch(`${TMDB_MULTI_BASE_URL}&query=${input}`, {
+          method: "GET",
+          headers: {
+            accept: "application/json",
+            Authorization: `Bearer ${env.TMDB_AUTH_TOKEN}`,
+          },
+        })
+      ).json()) as tmdbGeneralQueryResponse;
 
-    const name = await db
-      .select({ titleName: titles.name })
-      .from(titles)
-      .where(eq(titles.id, Number(input)));
+      const data = apiResponse.slice(
+        0,
+        apiResponse.length < 5 ? apiResponse.length : 5
+      );
 
-    if (!name[0]) {
-      throw new TRPCError({
-        message: "Could not find title in db",
-        code: "NOT_FOUND",
-      });
-    }
+      if (!data) {
+        return undefined;
+      }
 
-    const data: tmdbGeneralQueryResponse = (await (
-      await fetch(`${TMDB_MULTI_BASE_URL}&query=${name[0].titleName}`, {
-        method: "GET",
-        headers: {
-          accept: "application/json",
-          Authorization: `Bearer ${env.TMDB_AUTH_TOKEN}`,
-        },
-      })
-    ).json()) as tmdbGeneralQueryResponse;
-
-    return generateSearchResponse(data);
-  }),
+      return generateSearchResults(data);
+    }),
   quickAdd: publicProcedure
     .input(z.string().min(2))
     .mutation(async ({ input }) => {
