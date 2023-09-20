@@ -38,6 +38,16 @@ export function SearchSuggestions({
     }
   }, [searchText, debouncedSearch]);
 
+  useEffect(() => {
+    const down = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        toggleShowSuggestions(false);
+      }
+    };
+    document.addEventListener("keydown", down);
+    return () => document.removeEventListener("keydown", down);
+  }, []);
+
   return (
     data && (
       <div

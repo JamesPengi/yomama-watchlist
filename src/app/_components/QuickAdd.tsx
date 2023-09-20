@@ -97,7 +97,7 @@ export function QuickAdd() {
             <FormItem className="relative inline-flex w-full items-center rounded-md">
               <FormControl>
                 <Input
-                  type="name"
+                  type="text"
                   placeholder="Quick add title to watchlist"
                   className="inline-flex rounded border-none bg-gray-900 px-5 py-8 font-extrabold transition-colors focus:bg-gray-800"
                   {...field}
@@ -109,7 +109,7 @@ export function QuickAdd() {
                     onClick={() => form.reset()}
                     className="absolute right-2 top-4"
                   >
-                    <XIcon className="h-8 w-8 text-muted-foreground" />
+                    <XIcon className="h-8 w-8 text-muted-foreground hover:cursor-pointer" />
                   </div>
                 ) : (
                   <div className="absolute right-2 top-5">
