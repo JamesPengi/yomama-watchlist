@@ -91,11 +91,13 @@ export function generateSearchResults(tmdbData: tmdbGeneralQueryResult[]) {
   return tmdbData.map((title) => {
     let mediaType: tmdbMediaType = "movie";
     let titleName = title.title;
+    let searchableTitle = title.original_title!;
     let release_date = title.release_date!;
 
     if (title.media_type === "tv") {
       mediaType = "tv";
       titleName = title.name!;
+      searchableTitle = title.original_name!;
       if (
         title.origin_country[0] === "JP" ||
         title.origin_country[0] === "KR"
@@ -118,6 +120,7 @@ export function generateSearchResults(tmdbData: tmdbGeneralQueryResult[]) {
 
     return {
       title: titleName,
+      searchableTitle: searchableTitle,
       mediaType: mediaType,
       genre: genre,
       releaseDate: release_date.slice(0, 4),

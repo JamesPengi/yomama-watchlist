@@ -49,7 +49,7 @@ export function SearchSuggestions({
           return (
             <div
               key={index}
-              onClick={() => mutationFn(suggestion.title)}
+              onClick={() => mutationFn(suggestion.searchableTitle)}
               className="flex flex-row space-x-2 border-b transition-colors hover:cursor-pointer hover:bg-muted/50"
             >
               <Image
