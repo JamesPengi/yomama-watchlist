@@ -13,6 +13,7 @@ import { useToast } from "./ui/use-toast";
 import { ToastAction } from "./ui/toast";
 import { useRouter } from "next/navigation";
 import { SearchSuggestions } from "./ui/search-suggestions";
+import { XIcon } from "lucide-react";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -101,9 +102,20 @@ export function QuickAdd() {
                   {...field}
                 />
               </FormControl>
-              <div className="absolute right-1.5 top-3 hidden space-x-1 rounded-md font-mono text-[10px] text-sm font-medium md:flex ">
-                <kbd>CTRL</kbd>
-                <kbd>K</kbd>
+              <div className="hidden space-x-1 rounded-md font-mono text-[10px] text-sm font-medium md:flex ">
+                {searchText.length > 0 ? (
+                  <button
+                    onClick={() => form.reset()}
+                    className="absolute right-2 top-4"
+                  >
+                    <XIcon className="h-8 w-8 text-muted-foreground" />
+                  </button>
+                ) : (
+                  <div className="absolute right-2 top-5">
+                    <kbd>CTRL</kbd>
+                    <kbd>K</kbd>
+                  </div>
+                )}
               </div>
             </FormItem>
           )}
