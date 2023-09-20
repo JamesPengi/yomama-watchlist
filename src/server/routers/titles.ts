@@ -120,7 +120,7 @@ export const titlesRouter = router({
 
       const data = apiResponse.slice(
         0,
-        apiResponse.length < 5 ? apiResponse.length : 5
+        apiResponse.length < 11 ? apiResponse.length : 10
       );
 
       if (!data) {

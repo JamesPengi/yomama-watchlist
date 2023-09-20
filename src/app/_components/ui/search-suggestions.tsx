@@ -41,7 +41,7 @@ export function SearchSuggestions({
   return (
     data && (
       <div
-        className={`absolute z-10 flex w-full flex-col space-y-5 rounded rounded-t-none bg-gray-900 p-2 ${
+        className={`absolute z-10 flex h-[500px] w-full flex-col space-y-5 overflow-y-scroll rounded rounded-t-none bg-gray-900 p-2 ${
           !showSuggestions ? `hidden` : `visible`
         }`}
       >
