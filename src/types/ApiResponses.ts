@@ -1,4 +1,5 @@
 import type { tmdbGenreName, tmdbMediaType } from "~/types/tmdbSchema";
+import type { generateSearchResults } from "~/utils/generateResponse";
 
 export type getAllResponse = {
   id: number;
@@ -20,6 +21,7 @@ export type getAllResponse = {
 
 export type getOneResponse = {
   id: number;
+  tmdbId: string;
   title: string;
   overview: string;
   posterPath: string;
@@ -44,3 +46,14 @@ export type getOneResponse = {
     dateWatched: Date;
   };
 };
+
+export type searchOptionsResponse = {
+  tmdbId: string;
+  title: string;
+  mediaType: tmdbMediaType;
+  releaseDate: string;
+  genre: string;
+  posterPath: string;
+};
+
+export type SearchResultResponse = ReturnType<typeof generateSearchResults>;

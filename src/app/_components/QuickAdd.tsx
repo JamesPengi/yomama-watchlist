@@ -6,18 +6,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
 import * as z from "zod";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-} from "./ui/form";
+import { Form, FormControl, FormField, FormItem } from "./ui/form";
 import { useEffect } from "react";
 import { trpc } from "../_trpc/client";
 import { useToast } from "./ui/use-toast";
 import { ToastAction } from "./ui/toast";
 import { useRouter } from "next/navigation";
+import { SearchSuggestions } from "./ui/search-suggestions";
+import { XIcon } from "lucide-react";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -33,6 +29,7 @@ export function QuickAdd() {
     resolver: zodResolver(formSchema),
     defaultValues: { name: "" },
   });
+  const searchText = form.watch("name");
 
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -82,6 +79,7 @@ export function QuickAdd() {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
+    console.log("submitting");
     quickAdd.mutate(values.name);
   }
 
@@ -89,7 +87,7 @@ export function QuickAdd() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="my-10 w-full flex-1"
+        className="relative my-10 w-full flex-1"
         autoComplete="off"
       >
         <FormField
@@ -99,22 +97,34 @@ export function QuickAdd() {
             <FormItem className="relative inline-flex w-full items-center rounded-md">
               <FormControl>
                 <Input
-                  type="name"
+                  type="text"
                   placeholder="Quick add title to watchlist"
                   className="inline-flex rounded border-none bg-gray-900 px-5 py-8 font-extrabold transition-colors focus:bg-gray-800"
                   {...field}
                 />
               </FormControl>
-              <div className="absolute right-1.5 top-3 hidden space-x-1 rounded-md font-mono text-[10px] text-sm font-medium md:flex ">
-                <kbd>CTRL</kbd>
-                <kbd>K</kbd>
+              <div className="hidden space-x-1 rounded-md font-mono text-[10px] text-sm font-medium md:flex ">
+                {searchText.length > 0 ? (
+                  <div
+                    onClick={() => form.reset()}
+                    className="absolute right-2 top-4"
+                  >
+                    <XIcon className="h-8 w-8 text-muted-foreground hover:cursor-pointer" />
+                  </div>
+                ) : (
+                  <div className="absolute right-2 top-5">
+                    <kbd>CTRL</kbd>
+                    <kbd>K</kbd>
+                  </div>
+                )}
               </div>
             </FormItem>
           )}
         />
-        <FormDescription className="pt-2 text-xs text-muted-foreground">
-          Press <kbd>ENTER</kbd> to add to the watchlist
-        </FormDescription>
+        <SearchSuggestions
+          searchText={searchText}
+          mutationFn={(name) => quickAdd.mutate(name)}
+        />
       </form>
     </Form>
   );

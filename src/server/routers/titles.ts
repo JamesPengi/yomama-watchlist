@@ -18,7 +18,10 @@ import {
   parseTmdbTVResponse,
 } from "~/utils/parseTmdbResponse";
 import { db } from "~/db/drizzle";
-import { generateGetOneResponse } from "~/utils/generateResponse";
+import {
+  generateGetOneResponse,
+  generateSearchResults,
+} from "~/utils/generateResponse";
 
 const TMDB_MULTI_BASE_URL =
   "https://api.themoviedb.org/3/search/multi?include_adult=false&language=en-US&page=1";
@@ -27,42 +30,6 @@ const TMDB_MOVIE_BASE_URL = "https://api.themoviedb.org/3/movie";
 const TMDB_TV_BASE_URL = "https://api.themoviedb.org/3/tv";
 
 export const titlesRouter = router({
-  quickAdd: publicProcedure
-    .input(z.string().min(2))
-    .mutation(async ({ input }) => {
-      const { results: apiResponse }: tmdbGeneralQueryResponse = (await (
-        await fetch(`${TMDB_MULTI_BASE_URL}&query=${input}`, {
-          method: "GET",
-          headers: {
-            accept: "application/json",
-            Authorization: `Bearer ${env.TMDB_AUTH_TOKEN}`,
-          },
-        })
-      ).json()) as tmdbGeneralQueryResponse;
-
-      const data = apiResponse[0];
-
-      if (!data) {
-        throw new TRPCError({
-          message: `Could not find '${input}' on TMDB...`,
-          code: "PARSE_ERROR",
-        });
-      }
-
-      const parsedData: Title__Insert = parseTmdbGeneralResponse(data);
-      const returningData = await db
-        .insert(titles)
-        .values(parsedData)
-        .returning({ titleName: titles.name, titleId: titles.id });
-
-      if (!returningData[0]) {
-        throw new TRPCError({
-          message: `Could not parse data in the database...`,
-          code: "PARSE_ERROR",
-        });
-      }
-      return returningData[0];
-    }),
   getAll: publicProcedure.query(async () => {
     return await db.query.titles.findMany({
       with: {
@@ -138,6 +105,66 @@ export const titlesRouter = router({
         : parseTmdbTVResponse(apiResponse as tmdbTVQueryResult)
     );
   }),
+  search: publicProcedure
+    .input(z.string().min(2))
+    .mutation(async ({ input }) => {
+      const { results: apiResponse }: tmdbGeneralQueryResponse = (await (
+        await fetch(`${TMDB_MULTI_BASE_URL}&query=${input}`, {
+          method: "GET",
+          headers: {
+            accept: "application/json",
+            Authorization: `Bearer ${env.TMDB_AUTH_TOKEN}`,
+          },
+        })
+      ).json()) as tmdbGeneralQueryResponse;
+
+      const data = apiResponse.slice(
+        0,
+        apiResponse.length < 11 ? apiResponse.length : 10
+      );
+
+      if (!data) {
+        return undefined;
+      }
+
+      return generateSearchResults(data);
+    }),
+  quickAdd: publicProcedure
+    .input(z.string().min(2))
+    .mutation(async ({ input }) => {
+      const { results: apiResponse }: tmdbGeneralQueryResponse = (await (
+        await fetch(`${TMDB_MULTI_BASE_URL}&query=${input}`, {
+          method: "GET",
+          headers: {
+            accept: "application/json",
+            Authorization: `Bearer ${env.TMDB_AUTH_TOKEN}`,
+          },
+        })
+      ).json()) as tmdbGeneralQueryResponse;
+
+      const data = apiResponse[0];
+
+      if (!data) {
+        throw new TRPCError({
+          message: `Could not find '${input}' on TMDB...`,
+          code: "PARSE_ERROR",
+        });
+      }
+
+      const parsedData: Title__Insert = parseTmdbGeneralResponse(data);
+      const returningData = await db
+        .insert(titles)
+        .values(parsedData)
+        .returning({ titleName: titles.name, titleId: titles.id });
+
+      if (!returningData[0]) {
+        throw new TRPCError({
+          message: `Could not parse data in the database...`,
+          code: "PARSE_ERROR",
+        });
+      }
+      return returningData[0];
+    }),
   markAsWatched: publicProcedure
     .input(
       z.object({

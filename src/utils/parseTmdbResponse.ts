@@ -6,13 +6,14 @@ import {
   type tmdbTVQueryResult,
   type getOneApiResponse,
   type tmdbMovieQueryResult,
+  type tmdbMediaType,
 } from "../types/tmdbSchema";
 
 export function parseTmdbGeneralResponse(
   data: tmdbGeneralQueryResult
 ): Title__Insert {
-  let mediaType: "movie" | "tv" | "anime" = "movie";
-  let name = data.title;
+  let mediaType: tmdbMediaType = "movie";
+  let name = data.title!;
 
   if (data.media_type === "tv") {
     mediaType = "tv";

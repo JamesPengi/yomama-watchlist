@@ -5,13 +5,13 @@ export type tmdbGeneralQueryResult = {
   backdrop_path: string;
   id: number;
   name?: string;
-  title: string;
+  title?: string;
   original_language: string;
   original_name?: string;
   original_title?: string;
   overview: string;
   poster_path: string;
-  media_type: "movie" | "tv";
+  media_type: "movie" | "tv" | "person";
   genre_ids: number[];
   popularity: number;
   first_air_date?: string;
