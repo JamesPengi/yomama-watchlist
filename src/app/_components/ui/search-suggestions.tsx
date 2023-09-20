@@ -51,7 +51,7 @@ export function SearchSuggestions({
   return (
     data && (
       <div
-        className={`absolute z-10 flex h-[500px] w-full flex-col space-y-5 overflow-y-scroll rounded rounded-t-none bg-gray-900 p-2 ${
+        className={`absolute z-10 flex h-[500px] w-full flex-col space-y-2 overflow-y-scroll rounded rounded-t-none bg-gray-800 px-2 drop-shadow-sm ${
           !showSuggestions ? `hidden` : `visible`
         }`}
       >
@@ -60,7 +60,7 @@ export function SearchSuggestions({
             <div
               key={index}
               onClick={() => mutationFn(suggestion.searchableTitle)}
-              className="flex flex-row space-x-2 border-b transition-colors hover:cursor-pointer hover:bg-muted/50"
+              className="flex flex-row space-x-2 border-b p-1 transition-colors hover:cursor-pointer hover:bg-gray-700"
             >
               <Image
                 src={`https://image.tmdb.org/t/p/w92${suggestion.posterPath}`}
