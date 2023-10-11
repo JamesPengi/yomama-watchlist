@@ -5,20 +5,10 @@ import { DataTable } from "~/app/_components/ui/data-table";
 import React from "react";
 import { cn } from "~/utils/utils";
 import { Badge } from "./ui/badge";
-import type { serverClient } from "../_trpc/serverClient";
 import { trpc } from "../_trpc/client";
 import type { getAllResponse } from "~/types/ApiResponses";
 import { ToggleWatched } from "./ToggleWatched";
 import { Skeleton } from "./ui/skeleton";
-
-interface TitlesViewProps {
-  initialTitleData: Awaited<
-    ReturnType<(typeof serverClient)["titles"]["getAll"]>
-  >;
-  initialUserData: Awaited<
-    ReturnType<(typeof serverClient)["users"]["getAll"]>
-  >;
-}
 
 const Header = React.forwardRef<
   HTMLDivElement,
@@ -149,19 +139,23 @@ const initialTableState: InitialTableState = {
   },
 };
 
-export function TitlesView({
-  initialTitleData,
-  initialUserData,
-}: TitlesViewProps) {
-  trpc.users.getAll.useQuery(undefined, {
-    initialData: initialUserData,
-  });
+export function TitlesView() {
+  const { data, isLoading } = trpc.titles.getAll.useQuery();
 
-  const { data } = trpc.titles.getAll.useQuery(undefined, {
-    initialData: initialTitleData,
-  });
-
-  return (
-    <DataTable data={data} columns={columns} initialState={initialTableState} />
+  return isLoading ? (
+    <div className="flex flex-col space-y-5">
+      <Skeleton className="h-[40px]" />
+      <Skeleton className="h-[760px]" />
+    </div>
+  ) : (
+    <>
+      {data && (
+        <DataTable
+          data={data}
+          columns={columns}
+          initialState={initialTableState}
+        />
+      )}
+    </>
   );
 }
