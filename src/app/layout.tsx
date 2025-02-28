@@ -11,7 +11,7 @@ const fontSans = Rubik({ subsets: ["latin"], variable: "--font-sans" });
 
 export const metadata: Metadata = {
   title: "Yo Mama's Watchlist",
-  description: "A watchlist for friends",
+  description: "A watchlist for friends"
 };
 
 export default function RootLayout(props: { children: React.ReactNode }) {
