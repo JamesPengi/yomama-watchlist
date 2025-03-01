@@ -1,0 +1,1 @@
+ALTER TABLE "titles" ADD CONSTRAINT "titles_tmdbId_unique" UNIQUE("tmdbId");

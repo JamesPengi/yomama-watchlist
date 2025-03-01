@@ -19,7 +19,7 @@ export const mediaTypeEnum = pgEnum("mediaType", tmdbMediaTypeEnum.options);
 
 export const titles = pgTable("titles", {
   id: serial("id").primaryKey(),
-  tmdbId: varchar("tmdbId", { length: 20 }).notNull(),
+  tmdbId: varchar("tmdbId", { length: 20 }).notNull().unique(),
   name: varchar("name", { length: 256 }).notNull(),
   genre: genreEnum("genre").notNull(),
   mediaType: mediaTypeEnum("mediaType").notNull(),
@@ -56,8 +56,8 @@ export const titlesToUsers = pgTable(
       .references(() => users.id),
   },
   (t) => ({
-    pk: primaryKey(t.titleId, t.userId),
-  })
+    pk: primaryKey({ columns: [t.titleId, t.userId] }),
+  }),
 );
 
 export const titlesToUsersRelations = relations(titlesToUsers, ({ one }) => ({

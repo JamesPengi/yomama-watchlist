@@ -1,0 +1,233 @@
+{
+  "id": "c98785b2-9b53-418a-9d59-56498729df36",
+  "prevId": "3efbcaff-564f-4b8b-95a0-f9b4b07d3aad",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.titles": {
+      "name": "titles",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "tmdbId": {
+          "name": "tmdbId",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "genre": {
+          "name": "genre",
+          "type": "genre",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "mediaType": {
+          "name": "mediaType",
+          "type": "mediaType",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "dateAdded": {
+          "name": "dateAdded",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "isWatched": {
+          "name": "isWatched",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "dateWatched": {
+          "name": "dateWatched",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "userDescription": {
+          "name": "userDescription",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "userRating": {
+          "name": "userRating",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "titles_tmdbId_unique": {
+          "name": "titles_tmdbId_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "tmdbId"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.titles_to_users": {
+      "name": "titles_to_users",
+      "schema": "",
+      "columns": {
+        "title_id": {
+          "name": "title_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "titles_to_users_title_id_titles_id_fk": {
+          "name": "titles_to_users_title_id_titles_id_fk",
+          "tableFrom": "titles_to_users",
+          "tableTo": "titles",
+          "columnsFrom": [
+            "title_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "titles_to_users_user_id_users_id_fk": {
+          "name": "titles_to_users_user_id_users_id_fk",
+          "tableFrom": "titles_to_users",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "titles_to_users_title_id_user_id_pk": {
+          "name": "titles_to_users_title_id_user_id_pk",
+          "columns": [
+            "title_id",
+            "user_id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.users": {
+      "name": "users",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {
+    "public.genre": {
+      "name": "genre",
+      "schema": "public",
+      "values": [
+        "Action",
+        "Action & Adventure",
+        "Adventure",
+        "Animation",
+        "Comedy",
+        "Crime",
+        "Documentary",
+        "Drama",
+        "Family",
+        "Fantasy",
+        "History",
+        "Horror",
+        "Kids",
+        "Music",
+        "Mystery",
+        "News",
+        "Reality",
+        "Romance",
+        "Sci-Fi & Fantasy",
+        "Science Fiction",
+        "Soap",
+        "Talk",
+        "TV Movie",
+        "Thriller",
+        "War",
+        "War & Politics",
+        "Western",
+        "Unknown"
+      ]
+    },
+    "public.mediaType": {
+      "name": "mediaType",
+      "schema": "public",
+      "values": [
+        "movie",
+        "tv",
+        "anime"
+      ]
+    }
+  },
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

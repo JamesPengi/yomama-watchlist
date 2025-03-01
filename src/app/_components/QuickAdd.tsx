@@ -53,13 +53,13 @@ export function QuickAdd() {
     },
     onSuccess(data) {
       toast({
-        title: `Successfully added ${data.titleName}`,
+        title: `Successfully added ${data?.titleName}`,
         description: `You can now do to the title's page by clicking on this button`,
         action: (
           <ToastAction
             altText="Go to page"
             onClick={() => {
-              router.push(`/title/${data.titleId}`);
+              router.push(`/title/${data?.titleId}`);
             }}
           >
             Go to title
@@ -70,11 +70,22 @@ export function QuickAdd() {
       form.reset();
     },
     onError(error) {
-      toast({
-        title: `Error`,
-        description: error.message,
-        variant: "destructive",
-      });
+      if (error.data?.code === "CONFLICT") {
+        toast({
+          title: `Uhh oh!`,
+          description:
+            "This title already exists in the watchlist! Please search for it instead.",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: `Error: ${error.message}`,
+          description: "Please try again later",
+          variant: "destructive",
+        });
+      }
+      queryContext.titles.invalidate();
+      form.reset();
     },
   });
 
@@ -102,16 +113,16 @@ export function QuickAdd() {
                   {...field}
                 />
               </FormControl>
-              <div className="hidden space-x-1 rounded-md font-mono text-[10px] text-sm font-medium md:flex ">
+              <div className="hidden space-x-1 rounded-md font-mono text-sm text-[10px] font-medium md:flex">
                 {searchText.length > 0 ? (
                   <div
                     onClick={() => form.reset()}
-                    className="absolute right-2 top-4"
+                    className="absolute top-4 right-2"
                   >
-                    <XIcon className="h-8 w-8 text-muted-foreground hover:cursor-pointer" />
+                    <XIcon className="text-muted-foreground h-8 w-8 hover:cursor-pointer" />
                   </div>
                 ) : (
-                  <div className="absolute right-2 top-5">
+                  <div className="absolute top-5 right-2">
                     <kbd>CTRL</kbd>
                     <kbd>K</kbd>
                   </div>
