@@ -1,82 +1,19 @@
 {
-  "version": "5",
-  "dialect": "pg",
+  "version": "7",
+  "dialect": "postgresql",
   "entries": [
     {
       "idx": 0,
-      "version": "5",
-      "when": 1692382703179,
-      "tag": "0000_misty_hellion",
+      "version": "7",
+      "when": 1740833180146,
+      "tag": "0000_magenta_bullseye",
       "breakpoints": true
     },
     {
       "idx": 1,
-      "version": "5",
-      "when": 1692419120481,
-      "tag": "0001_large_swordsman",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "5",
-      "when": 1692421547361,
-      "tag": "0002_oval_silver_sable",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "5",
-      "when": 1692421691091,
-      "tag": "0003_long_barracuda",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "5",
-      "when": 1692531272988,
-      "tag": "0004_mighty_cardiac",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "5",
-      "when": 1692532487981,
-      "tag": "0005_redundant_kitty_pryde",
-      "breakpoints": true
-    },
-    {
-      "idx": 6,
-      "version": "5",
-      "when": 1692600839869,
-      "tag": "0006_workable_mojo",
-      "breakpoints": true
-    },
-    {
-      "idx": 7,
-      "version": "5",
-      "when": 1692810955936,
-      "tag": "0007_married_talos",
-      "breakpoints": true
-    },
-    {
-      "idx": 8,
-      "version": "5",
-      "when": 1692872759507,
-      "tag": "0008_lively_puppet_master",
-      "breakpoints": true
-    },
-    {
-      "idx": 9,
-      "version": "5",
-      "when": 1692964924361,
-      "tag": "0009_whole_power_pack",
-      "breakpoints": true
-    },
-    {
-      "idx": 10,
-      "version": "5",
-      "when": 1694074295891,
-      "tag": "0010_elite_goliath",
+      "version": "7",
+      "when": 1740833635385,
+      "tag": "0001_last_ben_grimm",
       "breakpoints": true
     }
   ]

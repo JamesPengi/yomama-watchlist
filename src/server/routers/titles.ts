@@ -87,7 +87,7 @@ export const titlesRouter = router({
             accept: "application/json",
             Authorization: `Bearer ${env.TMDB_AUTH_TOKEN}`,
           },
-        }
+        },
       )
     ).json()) as tmdbMovieQueryResult | tmdbTVQueryResult;
 
@@ -102,7 +102,7 @@ export const titlesRouter = router({
       dbData,
       dbData.mediaType === "movie"
         ? parseTmdbMovieResponse(apiResponse as tmdbMovieQueryResult)
-        : parseTmdbTVResponse(apiResponse as tmdbTVQueryResult)
+        : parseTmdbTVResponse(apiResponse as tmdbTVQueryResult),
     );
   }),
   search: publicProcedure
@@ -120,7 +120,7 @@ export const titlesRouter = router({
 
       const data = apiResponse.slice(
         0,
-        apiResponse.length < 11 ? apiResponse.length : 10
+        apiResponse.length < 11 ? apiResponse.length : 10,
       );
 
       if (!data) {
@@ -152,18 +152,19 @@ export const titlesRouter = router({
       }
 
       const parsedData: Title__Insert = parseTmdbGeneralResponse(data);
-      const returningData = await db
-        .insert(titles)
-        .values(parsedData)
-        .returning({ titleName: titles.name, titleId: titles.id });
+      try {
+        const returningData = await db
+          .insert(titles)
+          .values(parsedData)
+          .returning({ titleName: titles.name, titleId: titles.id });
 
-      if (!returningData[0]) {
+        return returningData[0];
+      } catch {
         throw new TRPCError({
-          message: `Could not parse data in the database...`,
-          code: "PARSE_ERROR",
+          message: `${parsedData.name} already exists in the watchlist`,
+          code: "CONFLICT",
         });
       }
-      return returningData[0];
     }),
   markAsWatched: publicProcedure
     .input(
@@ -172,7 +173,7 @@ export const titlesRouter = router({
         userDescription: z.string().min(2),
         userRating: z.string().min(1),
         usersWatched: z.array(z.object({ id: z.number(), name: z.string() })),
-      })
+      }),
     )
     .mutation(async ({ input }) => {
       const titlesToUsersValues: TitleToUser__Insert[] = [];
@@ -212,7 +213,7 @@ export const titlesRouter = router({
       z.object({
         type: z.array(z.enum(tmdbMediaTypeEnum.options)),
         genre: z.array(z.enum(tmdbGenreNameEnum.options)),
-      })
+      }),
     )
     .mutation(async ({ input }) => {
       const data = await db
@@ -222,8 +223,8 @@ export const titlesRouter = router({
           and(
             eq(titles.isWatched, false),
             inArray(titles.mediaType, input.type),
-            inArray(titles.genre, input.genre)
-          )
+            inArray(titles.genre, input.genre),
+          ),
         );
       const randomNumber = Math.floor(Math.random() * data.length);
       return data[randomNumber];

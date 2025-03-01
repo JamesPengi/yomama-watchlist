@@ -1,1 +1,0 @@
-ALTER TABLE "titles" ADD COLUMN "tmdbPosterPath" varchar(60) NOT NULL;
