@@ -144,8 +144,9 @@ export function TitlesView() {
 
   return isLoading ? (
     <div className="flex flex-col space-y-5">
-      <Skeleton className="h-[40px]" />
-      <Skeleton className="h-[760px]" />
+      <Skeleton className="h-[3rem]" />
+      <Skeleton className="h-[20rem]" />
+      <Skeleton className="h-[2rem]" />
     </div>
   ) : (
     <>
