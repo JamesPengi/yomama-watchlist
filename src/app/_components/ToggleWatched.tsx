@@ -45,6 +45,7 @@ import {
   DrawerContent,
   DrawerDescription,
   DrawerFooter,
+  DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
 } from "~/app/_components/ui/drawer";
@@ -316,10 +317,9 @@ export function ToggleWatched({
         )}
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>{titleName}</DialogTitle>
+            <DialogTitle className="text-3xl">Watched {titleName}?</DialogTitle>
             <DialogDescription>
-              Enter who watched {titleName} your rating, and phrase to describe
-              it.
+              Enter who watched it, your rating, and phrase to describe it.
             </DialogDescription>
           </DialogHeader>
           <MarkAsWatchedForm
@@ -377,12 +377,15 @@ export function ToggleWatched({
             </Button>
           </DrawerTrigger>
           <DrawerContent>
-            <div className="mx-auto p-5">
-              <DrawerTitle>{titleName}</DrawerTitle>
+            <DrawerHeader>
+              <DrawerTitle className="text-3xl">
+                Watched {titleName}?
+              </DrawerTitle>
               <DrawerDescription>
-                Enter who watched {titleName} your rating, and phrase to
-                describe it.
+                Enter who watched it, your rating, and phrase to describe it.
               </DrawerDescription>
+            </DrawerHeader>
+            <div className="px-4">
               <MarkAsWatchedForm
                 titleId={titleId}
                 titleName={titleName}
