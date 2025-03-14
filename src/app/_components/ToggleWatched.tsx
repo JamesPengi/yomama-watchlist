@@ -39,6 +39,15 @@ import {
   AlertDialogTrigger,
 } from "./ui/alert-dialog";
 import { useToast } from "./ui/use-toast";
+import { useMediaQuery } from "@uidotdev/usehooks";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerTitle,
+  DrawerTrigger,
+} from "~/app/_components/ui/drawer";
 
 interface MarkAsWatchedProps {
   titleId: number;
@@ -60,16 +69,17 @@ const formSchema = z.object({
   }),
 });
 
-export function ToggleWatched({
+function MarkAsWatchedForm({
   titleId,
   titleName,
   userData,
-  isWatched,
-  showDescription = false,
-}: MarkAsWatchedProps) {
+  closeForm,
+}: MarkAsWatchedProps & {
+  closeForm: () => void;
+}) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: { users: ["Jassem"], ratings: "", description: "" },
+    defaultValues: { users: [""], ratings: "", description: "" },
   });
   const onSubmit = (data: z.infer<typeof formSchema>) => {
     if (userData) {
@@ -103,7 +113,7 @@ export function ToggleWatched({
     },
     onSuccess() {
       queryContext.titles.invalidate();
-      setDialogOpen(false);
+      closeForm();
       form.reset();
       toast({
         description: `Marked '${titleName}' as watched!`,
@@ -117,6 +127,122 @@ export function ToggleWatched({
       });
     },
   });
+
+  return (
+    <Form {...form}>
+      <form
+        className="space-y-5 pt-2 pb-5"
+        onSubmit={form.handleSubmit(onSubmit)}
+        autoComplete="off"
+      >
+        <div className="w-2/3 space-y-5">
+          <FormField
+            control={form.control}
+            name="users"
+            render={() => {
+              return (
+                <FormItem>
+                  <div className="mb-4">
+                    <FormLabel className="font-bold">People Watched</FormLabel>
+                    <FormDescription>
+                      Select the people who watched this
+                    </FormDescription>
+                    <div className="mt-3 space-y-2">
+                      {userData?.map((user) => {
+                        return (
+                          <FormField
+                            key={user.id}
+                            control={form.control}
+                            name="users"
+                            render={({ field }) => {
+                              return (
+                                <FormItem
+                                  key={user.id}
+                                  className="flex flex-row items-start space-y-0 space-x-3"
+                                >
+                                  <FormControl>
+                                    <Checkbox
+                                      checked={field.value.includes(
+                                        String(user.name),
+                                      )}
+                                      onCheckedChange={(checked) => {
+                                        return checked
+                                          ? field.onChange([
+                                              ...field.value,
+                                              user.name,
+                                            ])
+                                          : field.onChange(
+                                              field.value.filter(
+                                                (value) =>
+                                                  value !== String(user.name),
+                                              ),
+                                            );
+                                      }}
+                                    />
+                                  </FormControl>
+                                  <FormLabel>{user.name}</FormLabel>
+                                </FormItem>
+                              );
+                            }}
+                          />
+                        );
+                      })}
+                    </div>
+                    <FormMessage className="mt-2" />
+                  </div>
+                </FormItem>
+              );
+            }}
+          />
+          <FormField
+            control={form.control}
+            name="ratings"
+            render={({ field }) => {
+              return (
+                <FormItem>
+                  <FormLabel className="font-bold">Rating</FormLabel>
+                  <FormControl>
+                    <Input placeholder="6.9" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              );
+            }}
+          />
+          <FormField
+            control={form.control}
+            name="description"
+            render={({ field }) => {
+              return (
+                <FormItem>
+                  <FormLabel className="font-bold">Description</FormLabel>
+                  <FormControl>
+                    <Input type="name" placeholder="Description" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              );
+            }}
+          />
+        </div>
+        <DialogFooter>
+          <Button type="submit">Mark as Watched</Button>
+        </DialogFooter>
+      </form>
+    </Form>
+  );
+}
+
+export function ToggleWatched({
+  titleId,
+  titleName,
+  userData,
+  isWatched,
+  showDescription = false,
+}: MarkAsWatchedProps) {
+  const isDesktop = useMediaQuery("(min-width: 48rem)");
+  const queryContext = trpc.useContext();
+  const { toast } = useToast();
   const markAsNotWatchedMutation = trpc.titles.markAsNotWatched.useMutation({
     onMutate() {
       toast({
@@ -127,6 +253,7 @@ export function ToggleWatched({
       queryContext.titles.getOne.invalidate(String(titleId));
       queryContext.titles.getAll.invalidate();
       toast({ description: `Marked ${titleName} as not watched!` });
+      setIsOpen(false);
     },
     onError(error) {
       toast({
@@ -137,171 +264,137 @@ export function ToggleWatched({
     },
   });
 
-  const [dialogOpen, setDialogOpen] = useState<boolean>(false);
-
-  return (
-    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-      {isWatched ? (
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  if (isDesktop) {
+    return (
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        {isWatched ? (
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button
+                variant="ghost"
+                className="data-[state=open]:bg-muted flex h-8 w-8 rounded-full p-0"
+              >
+                <CheckCircle className="text-green-500" />
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This will mark {titleName} as not watched and erase all the
+                  user data from it
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={() =>
+                    markAsNotWatchedMutation.mutate({ id: titleId })
+                  }
+                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                >
+                  Mark as not watched
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        ) : (
+          <DialogTrigger asChild>
             <Button
               variant="ghost"
-              className="flex h-8 w-8 rounded-full p-0 data-[state=open]:bg-muted"
+              className="data-[state=open]:bg-muted h-8 w-8 rounded-full p-0"
+            >
+              <CircleDashed className="text-red-500" />
+            </Button>
+          </DialogTrigger>
+        )}
+        {showDescription && (
+          <span className="text-muted-foreground text-center text-[12px] leading-3">
+            {!isWatched && `Not `}Watched
+          </span>
+        )}
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{titleName}</DialogTitle>
+            <DialogDescription>
+              Enter who watched {titleName} your rating, and phrase to describe
+              it.
+            </DialogDescription>
+          </DialogHeader>
+          <MarkAsWatchedForm
+            titleId={titleId}
+            titleName={titleName}
+            isWatched={isWatched}
+            userData={userData}
+            closeForm={() => setIsOpen(false)}
+          />
+        </DialogContent>
+      </Dialog>
+    );
+  }
+
+  return (
+    <Drawer open={isOpen} onOpenChange={setIsOpen}>
+      {isWatched ? (
+        <>
+          <DrawerTrigger asChild>
+            <Button
+              variant="ghost"
+              className="data-[state=open]:bg-muted flex h-8 w-8 rounded-full p-0"
             >
               <CheckCircle className="text-green-500" />
             </Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-              <AlertDialogDescription>
+          </DrawerTrigger>
+          <DrawerContent>
+            <div className="mx-auto p-5">
+              <DrawerTitle>Are you absolutely sure?</DrawerTitle>
+              <DrawerDescription>
                 This will mark {titleName} as not watched and erase all the user
                 data from it
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction
-                onClick={() => markAsNotWatchedMutation.mutate({ id: titleId })}
-                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-              >
-                Mark as not watched
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+              </DrawerDescription>
+              <DrawerFooter>
+                <Button
+                  onClick={() =>
+                    markAsNotWatchedMutation.mutate({ id: titleId })
+                  }
+                  variant="destructive"
+                >
+                  Mark as not watched
+                </Button>
+              </DrawerFooter>
+            </div>
+          </DrawerContent>
+        </>
       ) : (
-        <DialogTrigger asChild>
-          <Button
-            variant="ghost"
-            className="flex h-8 w-8 rounded-full p-0 data-[state=open]:bg-muted"
-          >
-            <CircleDashed className="text-red-500" />
-          </Button>
-        </DialogTrigger>
-      )}
-      {showDescription && (
-        <span className="text-[12px] text-muted-foreground">
-          {!isWatched && `Not `}Watched
-        </span>
-      )}
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>{titleName}</DialogTitle>
-          <DialogDescription>
-            Enter who watched {titleName} your rating, and phrase to describe
-            it.
-          </DialogDescription>
-        </DialogHeader>
-        <Form {...form}>
-          <form
-            className="space-y-5 pb-5 pt-2"
-            onSubmit={form.handleSubmit(onSubmit)}
-            autoComplete="off"
-          >
-            <div className="w-2/3 space-y-5">
-              <FormField
-                control={form.control}
-                name="users"
-                render={() => {
-                  return (
-                    <FormItem>
-                      <div className="mb-4">
-                        <FormLabel className="font-bold">
-                          People Watched
-                        </FormLabel>
-                        <FormDescription>
-                          Select the people who watched this
-                        </FormDescription>
-                        <div className="mt-3 space-y-2">
-                          {userData?.map((user) => {
-                            return (
-                              <FormField
-                                key={user.id}
-                                control={form.control}
-                                name="users"
-                                render={({ field }) => {
-                                  return (
-                                    <FormItem
-                                      key={user.id}
-                                      className="flex flex-row items-start space-x-3 space-y-0"
-                                    >
-                                      <FormControl>
-                                        <Checkbox
-                                          checked={field.value.includes(
-                                            String(user.name)
-                                          )}
-                                          onCheckedChange={(checked) => {
-                                            return checked
-                                              ? field.onChange([
-                                                  ...field.value,
-                                                  user.name,
-                                                ])
-                                              : field.onChange(
-                                                  field.value.filter(
-                                                    (value) =>
-                                                      value !==
-                                                      String(user.name)
-                                                  )
-                                                );
-                                          }}
-                                        />
-                                      </FormControl>
-                                      <FormLabel>{user.name}</FormLabel>
-                                    </FormItem>
-                                  );
-                                }}
-                              />
-                            );
-                          })}
-                        </div>
-                        <FormMessage className="mt-2" />
-                      </div>
-                    </FormItem>
-                  );
-                }}
-              />
-              <FormField
-                control={form.control}
-                name="ratings"
-                render={({ field }) => {
-                  return (
-                    <FormItem>
-                      <FormLabel className="font-bold">Rating</FormLabel>
-                      <FormControl>
-                        <Input placeholder="6.9" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  );
-                }}
-              />
-              <FormField
-                control={form.control}
-                name="description"
-                render={({ field }) => {
-                  return (
-                    <FormItem>
-                      <FormLabel className="font-bold">Description</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="name"
-                          placeholder="Description"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  );
-                }}
+        <>
+          <DrawerTrigger asChild>
+            <Button
+              variant="ghost"
+              className="data-[state=open]:bg-muted h-8 w-8 rounded-full p-0"
+            >
+              <CircleDashed className="text-red-500" />
+            </Button>
+          </DrawerTrigger>
+          <DrawerContent>
+            <div className="mx-auto p-5">
+              <DrawerTitle>{titleName}</DrawerTitle>
+              <DrawerDescription>
+                Enter who watched {titleName} your rating, and phrase to
+                describe it.
+              </DrawerDescription>
+              <MarkAsWatchedForm
+                titleId={titleId}
+                titleName={titleName}
+                isWatched={isWatched}
+                userData={userData}
+                closeForm={() => setIsOpen(false)}
               />
             </div>
-            <DialogFooter>
-              <Button type="submit">Mark as Watched</Button>
-            </DialogFooter>
-          </form>
-        </Form>
-      </DialogContent>
-    </Dialog>
+          </DrawerContent>
+        </>
+      )}
+      {showDescription}
+    </Drawer>
   );
 }
